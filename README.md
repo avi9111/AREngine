@@ -4,12 +4,16 @@ AnotherRenderEngine(AREngine) is going to create to engin to render all kind of 
 
 # Depencies
 DirectX官方的win SDK包
-（DirectX SDK）
+
+(DirectX SDK)
+
 vs 2019 && c++桌面开发工具
+
 (VS + CPP DesktopTop)
 
+
 # 界面截图
-![主界面]("Images/main.png")
+![主界面](Images/main.png)
 
 # Feature:
 IMGUI
