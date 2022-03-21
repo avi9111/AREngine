@@ -29,6 +29,7 @@ private:
 	ID3D11Buffer* mCBMatrixBuffer; //(常量)缓存,顶点索引也是用这个类型
 
 private:
+	//bool InitShaderWithException(ID3D11Device*, HWND, WCHAR const*, WCHAR const*);
 	bool InitializeShader(ID3D11Device*, HWND, WCHAR const *, WCHAR const *); //用于创建InputLayout,VertexShader,PixelShader,常量缓存
 	bool ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR const *);
@@ -37,6 +38,7 @@ private:
 	void RenderShader(ID3D11DeviceContext*, int);
 
 public:
+	int ShaderIndex;
 	ColorShaderClass();
 	ColorShaderClass(const ColorShaderClass&);
 	~ColorShaderClass();

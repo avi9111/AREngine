@@ -6,10 +6,13 @@
 #include"InputClass.h"
 #include<Windows.h>  
 #include"GraphicsClass.h"
-
+#include "../Core/LayerManager.h"
+#include <functional>
+#include "../Core/Event/EventBase.h"
+//using namespace std;
 class SystemClass
 {
-
+	
 private:
 	LPCWSTR mApplicationName;  //应用名字
 	HINSTANCE mHinstance; //应用实例句柄
@@ -18,7 +21,7 @@ private:
 private:
 	InputClass* m_Input; //输入类
 	GraphicsClass* m_Graphics; //图形类
-
+	LayerManager* m_LayerManager;
 private:
 	//帧函数
 	bool Frame();
@@ -30,7 +33,13 @@ private:
 	void ShutdownWindow();
 
 public:
-
+	//using EventCallback = std::function<void(Event&)>;
+	//EventCallback eventCallback;
+	//void SetEventCallback(const EventCallback& callBack);
+	void OnEvent(Event& event);
+	bool OnChangeShader(Event& event);
+	InputClass* Input();
+	ModelClass* Model();
 	/*构造函数*/
 	SystemClass();
 

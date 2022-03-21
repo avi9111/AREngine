@@ -36,6 +36,9 @@ private:
 	bool Render();
 
 public:
+	D3DClass* D3D();
+	ModelClass* Model();//¡Ÿ ±µƒªÊ÷∆model
+	ColorShaderClass* Shader();
 	GraphicsClass();
 	GraphicsClass(const GraphicsClass&);
 	~GraphicsClass();

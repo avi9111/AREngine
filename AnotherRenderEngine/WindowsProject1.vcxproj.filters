@@ -51,6 +51,48 @@
     <ClInclude Include="Maths\matrix.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Component.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\LayerManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ComInput.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Event\KeyCode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\app.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\system.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\button_codes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\output_stream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\log\log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\log\output_stream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Event\EventBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Event\TesterEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Event\WindowEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\TexClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsProject1.cpp">
@@ -78,6 +120,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Maths\Matrix.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Component.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\LayerManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ComInput.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\TexClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

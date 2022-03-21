@@ -1,8 +1,10 @@
 #include"SystemClass.h"
-
+#include "../Core/ComInput.h"//TODO:相对引用，要改
+#include "../Core/Event/TesterEvent.h"
 //全局变量
-static SystemClass* D3DAPP = NULL;
-
+//static SystemClass* D3DAPP = NULL;
+// ？？放在头文件？
+extern SystemClass* D3DAPP = NULL;
 
 //接受SystemClass类对象的全局回调函数
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -28,12 +30,35 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 }
 
+/*
+/// <summary>
+/// 可一直使用的EventHandler不同，这个c++自定义BaseEvent的使用：应该在onInput
+/// </summary>
+/// <param name="callBack"></param>
+void SystemClass::SetEventCallback(const EventCallback& callBack)
+{
+	eventCallback = callBack;
+}*/
 
+InputClass* SystemClass::Input()
+{
+	return m_Input;
+}
+/// <summary>
+/// TODO:临时方法
+/// </summary>
+/// <returns></returns>
+ModelClass* SystemClass::Model()
+{
+	return m_Graphics->Model();
+}
 
 SystemClass::SystemClass()
 {
 	m_Graphics = NULL;
 	m_Input = NULL;
+	m_LayerManager = NULL;
+
 }
 
 SystemClass::SystemClass(const SystemClass& sys)
@@ -47,9 +72,52 @@ SystemClass::~SystemClass()
 
 }
 
+void SystemClass::OnEvent(Event& event)
+{
+	//没完全用过的代码，handler代码可参考代码：
+	//处理代码，例子1
+	//EventDispatcher dispatcher(event);
+	//dispatcher.Dispath<WindowCloseEvent>(BIND_EVENT(Game::OnClose, this));
+
+	//处理代码，例子2
+/*	if (!event.bHandled)
+	{
+	}*/
+	EventDispatcher dispatcher(event);
+	dispatcher.Dispath<TesterEvent>(BIND_EVENT(SystemClass::OnChangeShader, this));
+}
+bool SystemClass::OnChangeShader(Event& event)
+{
+	auto shader = m_Graphics->Shader();
+	TesterEvent* eve = dynamic_cast<TesterEvent*>(&event);
+	bool initResult = true;
+	switch (eve->key)
+	{
+	case 49:
+		
+		shader->ShaderIndex = 1;
+		initResult = shader->Initialize(m_Graphics->D3D()->GetDevice(), mHwnd);
+		break;
+	case 50:
+		shader->ShaderIndex = 2;
+		initResult = shader->Initialize(m_Graphics->D3D()->GetDevice(), mHwnd);
+		break;
+	case 51 :
+		break;
+	default:
+		break;
+	}
+	if (initResult == false) {
+		throw exception("shader compile error");
+	}
+	return true;
+}
+
 /*系统类初始化函数*/
 bool SystemClass::Initialize()
 {
+
+	//SetEventCallback(BIND_EVENT(SystemClass::OnEvent, this));
 	int ScreenWidth, ScreenHeight;
 	bool result;
 
@@ -66,6 +134,11 @@ bool SystemClass::Initialize()
 	{
 		return false;
 	}
+
+	m_LayerManager = new LayerManager();
+	auto component = new ComInput();
+	component->SetEventCallback(BIND_EVENT(SystemClass::OnEvent, this));
+	m_LayerManager->PushLayer(shared_ptr<ComInput>( component));
 
 
 	/*初始化输入对象*/
@@ -130,6 +203,10 @@ void SystemClass::Run()
 		}
 		else
 		{
+			for (auto it = m_LayerManager->Begin(); it != m_LayerManager->End(); it++)
+			{
+				(*it)->OnImguiRender();
+			}
 			result = Frame();  //Frame运行的函数可能造成游戏退出
 			if (!result)
 			{
@@ -144,6 +221,7 @@ bool SystemClass::Frame()
 {
 	bool result;
 
+	
 	//你按下了退出函数,则退出这个应用(按键的宏刚好相对应)
 	if (m_Input->IsKeyDown(VK_ESCAPE))
 	{
@@ -164,12 +242,18 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wPa
 {
 	switch (message)
 	{
-
+		//消息处理可参考sdEngine最新
+		// GameWindow.cpp
+		//WM_CHAR 和 WM_keydown的问题观察
+		//https://bbs.csdn.net/topics/60387619
 	   //确认一个键已经在键盘上按下
 	   case WM_KEYDOWN:
 	  {
+		   if (wParam == VK_ESCAPE)
+		   {
+		   }
 		  //如果一个键被按下,则将这个键的信息送到input object,为了可以记录这个状态
-		  m_Input->KeyDown((unsigned int)wParam);
+		  m_Input->KeyDown((unsigned int)wParam);//所有字符都是 ，229,无解。。。。。。。。。。。
 		  return 0;
 	  }
 
@@ -178,9 +262,23 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wPa
 	   {
 		   //如果一个键被释放,则将这个键的信息送到input object,为了可以取消这个状态
 		   m_Input->KeyUp((unsigned int)wParam);
+		   //不知道 WM_KEYUP，WM_CHAR的关系
+		   //有点傻傻搞不清楚
+		   //暂时，强制把所有按键都还原
+		   //（WM_KEYUP 时，wParam又不固定，也差wm_char不相同。。。。。。。）
+		  // if (wParam == 229) {
+			   for (int i = 0; i < 200; i++)
+			   {
+				   m_Input->KeyUp(i);
+			   }
+		   //}
 		   return 0;
 	   }
-
+	   case WM_CHAR:
+	   {
+		   m_Input->KeyDown((unsigned int)wParam);
+		   return 0;
+	   }
 	   //其它的消息被送到默认处理消息函数
 	   default:
 	   {

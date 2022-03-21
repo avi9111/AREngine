@@ -91,13 +91,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dx11d.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nya_engine_desktop_opengl.lib;d3d11.lib;d3dx11d.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\BaiduProjects\nya-engine-master\bin\windsk_vs2013_debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -149,7 +151,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core\ComInput.h" />
+    <ClInclude Include="Core\Component.h" />
+    <ClInclude Include="Core\Event\EventBase.h" />
+    <ClInclude Include="Core\Event\KeyCode.h" />
+    <ClInclude Include="Core\Event\WindowEvent.h" />
+    <ClInclude Include="Core\LayerManager.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Include\app.h" />
+    <ClInclude Include="Include\button_codes.h" />
+    <ClInclude Include="Include\log\log.h" />
+    <ClInclude Include="Include\log\output_stream.h" />
+    <ClInclude Include="Include\output_stream.h" />
+    <ClInclude Include="Include\system.h" />
     <ClInclude Include="Maths\matrix.h" />
     <ClInclude Include="Render\CameraClass.h" />
     <ClInclude Include="Render\ColorShaderClass.h" />
@@ -160,9 +174,14 @@
     <ClInclude Include="Render\SystemClass.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Core\Event\TesterEvent.h" />
+    <ClInclude Include="Render\TexClass.h" />
     <ClInclude Include="WindowsProject1.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\ComInput.cpp" />
+    <ClCompile Include="Core\Component.cpp" />
+    <ClCompile Include="Core\LayerManager.cpp" />
     <ClCompile Include="Maths\Matrix.cpp" />
     <ClCompile Include="Render\ColorShaderClass.cpp" />
     <ClCompile Include="Render\D3DClass.cpp" />
@@ -171,6 +190,7 @@
     <ClCompile Include="Render\ModelClass.cpp" />
     <ClCompile Include="Render\SystemClass.cpp" />
     <ClCompile Include="Render\AREngine源.cpp" />
+    <ClCompile Include="Render\TexClass.cpp" />
     <ClCompile Include="WindowsProject1.cpp" />
   </ItemGroup>
   <ItemGroup>

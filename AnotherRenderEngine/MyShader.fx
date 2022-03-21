@@ -11,7 +11,8 @@ cbuffer CBMatrix:register(b0)
 struct VertexIn
 {
 	float4 Pos:POSITION;
-	float4 color:COLOR;
+	//float4 color:COLOR;
+	float2 TextureUV:TEXCOORD0;
 };
 
 
@@ -28,7 +29,8 @@ VertexOut VS(VertexIn ina)
 	outa.Pos = mul(ina.Pos, World);
 	outa.Pos = mul(outa.Pos, View);
 	outa.Pos = mul(outa.Pos, Proj);
-	outa.color = ina.color;
+	//outa.color = ina.color;
+	outa.color = float4(ina.TextureUV,0,1);
 	return outa;
 }
 

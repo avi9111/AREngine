@@ -13,6 +13,10 @@
 /x64/
 /AnotherRenderEngine/Debug/
 /AnotherRenderEngine/x64/
+/SDEngine-master/
+/SDEngine一些技术点/
+/DirectX11_Learning-master/
+/Project_origin_bk.zip
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 
