@@ -73,8 +73,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x86\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -91,20 +91,24 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dx11d.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfbxsdk.lib;libfbxsdk-md.lib;libfbxsdk-mt.lib;wininet.lib;d3d11.lib;d3dx11d.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x86\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
+    <PostBuildEvent>
+      <Command>editbin /SUBSYSTEM:CONSOLE $(OUTDIR)\$(ProjectName).exe</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -153,12 +157,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\ComInput.h" />
+    <ClInclude Include="Core\CommomVertexFormat.h" />
     <ClInclude Include="Core\Component.h" />
     <ClInclude Include="Core\Event\EventBase.h" />
     <ClInclude Include="Core\Event\KeyCode.h" />
     <ClInclude Include="Core\Event\WindowEvent.h" />
+    <ClInclude Include="Core\GameObject.h" />
+    <ClInclude Include="Core\ImportFBX.h" />
     <ClInclude Include="Core\LayerManager.h" />
+    <ClInclude Include="Core\MeshComponent.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Core\ImportFbx2.h" />
+    <ClInclude Include="Core\ImportBase.h" />
     <ClInclude Include="Include\app.h" />
     <ClInclude Include="Include\button_codes.h" />
     <ClInclude Include="Include\log\log.h" />
@@ -182,7 +192,12 @@
   <ItemGroup>
     <ClCompile Include="Core\ComInput.cpp" />
     <ClCompile Include="Core\Component.cpp" />
+    <ClCompile Include="Core\GameObject.cpp" />
+    <ClCompile Include="Core\ImportFBX.cpp" />
     <ClCompile Include="Core\LayerManager.cpp" />
+    <ClCompile Include="Core\ImportFbx2.cpp" />
+    <ClCompile Include="Core\ImportBase.cpp" />
+    <ClCompile Include="Core\MeshComponent.cpp" />
     <ClCompile Include="Maths\Matrix.cpp" />
     <ClCompile Include="Render\ColorShaderClass.cpp" />
     <ClCompile Include="Render\D3DClass.cpp" />

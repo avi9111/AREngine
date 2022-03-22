@@ -4,6 +4,7 @@
 class ComInput: public Component
 {
 public:
+	
 	using EventCallback = std::function<void(Event&)>;
 	EventCallback eventCallback;
 	void SetEventCallback(const EventCallback& callBack);

@@ -4,7 +4,7 @@
 //全局变量
 //static SystemClass* D3DAPP = NULL;
 // ？？放在头文件？
-extern SystemClass* D3DAPP = NULL;
+//extern SystemClass* D3DAPP = NULL;
 
 //接受SystemClass类对象的全局回调函数
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -25,7 +25,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	//将其它消息传送到D3DAPP也就是SystemClass对象的MessageHandler函数
 	default:
-		return D3DAPP->MessageHandler(hwnd, message, wParam, lParam);
+		//return D3DAPP->MessageHandler(hwnd, message, wParam, lParam);
+		return GDirectxCore->MessageHandler(hwnd, message, wParam, lParam);
 
 	}
 }
@@ -40,19 +41,13 @@ void SystemClass::SetEventCallback(const EventCallback& callBack)
 	eventCallback = callBack;
 }*/
 
-InputClass* SystemClass::Input()
-{
-	return m_Input;
-}
+InputClass* SystemClass::Input(){return m_Input;}
 /// <summary>
 /// TODO:临时方法
 /// </summary>
 /// <returns></returns>
-ModelClass* SystemClass::Model()
-{
-	return m_Graphics->Model();
-}
-
+ModelClass* SystemClass::Model(){return m_Graphics->Model();}
+GraphicsClass* SystemClass::Graphics() { return m_Graphics; }
 SystemClass::SystemClass()
 {
 	m_Graphics = NULL;
@@ -296,7 +291,7 @@ void SystemClass::InitializeWindow(int& ScrrenWidth, int &ScrrenHeight)
 	int posX, posY;
 
 	//获取一个额外的指向这个对象的指针
-	D3DAPP = this;   
+	//D3DAPP = this;   
 
 	//获取应用实例句柄
 	mHinstance = GetModuleHandle(NULL);
@@ -388,7 +383,20 @@ void SystemClass::ShutdownWindow()
 	mHinstance = NULL;
 
 	//置空应用类对象
-	D3DAPP = NULL;
+	//D3DAPP = NULL;
 
 }
+
+shared_ptr<SystemClass> SystemClass::Get()
+{
+	if (nullptr == m_pDirectxCore)
+	{
+		m_pDirectxCore = shared_ptr<SystemClass>(new SystemClass());
+	}
+
+	return m_pDirectxCore;
+	//return shared_ptr<SystemClass>();
+	//return D3DAPP;
+}
+shared_ptr<SystemClass> SystemClass::m_pDirectxCore = nullptr;
 

@@ -6,7 +6,7 @@
 
 //#include "Component.h"
 //全局变量，参考：https://www.cnblogs.com/stones-dream/p/9553843.html
-extern SystemClass* D3DAPP;
+//extern SystemClass* D3DAPP;
 ComInput::ComInput():Component("Input")
 {
 	
@@ -70,7 +70,7 @@ ComInput::ComInput():Component("Input")
 //}
 void resetKeyboards()
 {
-	auto input = D3DAPP->Input();
+	auto input = GDirectxCore->Input();
 	for (int i = 0; i < 200; i++)
 	{
 		input->KeyUp(i);
@@ -78,32 +78,32 @@ void resetKeyboards()
 }
 void ComInput::OnImguiRender()
 {
-	auto input = D3DAPP->Input();
+	auto input = GDirectxCore->Input();
 	float moveStep = 0.001;
-	if (D3DAPP->Input()->IsKeyDown(119))
+	if (GDirectxCore->Input()->IsKeyDown(119))
 	{
-		auto pos = D3DAPP->Model()->GetPosition();
+		auto pos = GDirectxCore->Model()->GetPosition();
 		pos.y += moveStep;
-		D3DAPP->Model()->SetPosition(pos);
+		GDirectxCore->Model()->SetPosition(pos);
 	}
-	else if (D3DAPP->Input()->IsKeyDown(115))
+	else if (GDirectxCore->Input()->IsKeyDown(115))
 	{
-		auto pos = D3DAPP->Model()->GetPosition();
+		auto pos = GDirectxCore->Model()->GetPosition();
 		pos.y -= moveStep;
-		D3DAPP->Model()->SetPosition(pos);
+		GDirectxCore->Model()->SetPosition(pos);
 	}
-	else if (D3DAPP->Input()->IsKeyDown(97)) {
-		auto pos = D3DAPP->Model()->GetPosition();
+	else if (GDirectxCore->Input()->IsKeyDown(97)) {
+		auto pos = GDirectxCore->Model()->GetPosition();
 		pos.x -= moveStep;
-		D3DAPP->Model()->SetPosition(pos);
+		GDirectxCore->Model()->SetPosition(pos);
 	}
-	else if (D3DAPP->Input()->IsKeyDown(100))
+	else if (GDirectxCore->Input()->IsKeyDown(100))
 	{
-		auto pos = D3DAPP->Model()->GetPosition();
+		auto pos = GDirectxCore->Model()->GetPosition();
 		pos.x += moveStep;
-		D3DAPP->Model()->SetPosition(pos);
+		GDirectxCore->Model()->SetPosition(pos);
 	}
-	else if (D3DAPP->Input()->IsKeyDown(49))//键盘 1==49; 键盘 2==50
+	else if (GDirectxCore->Input()->IsKeyDown(49))//键盘 1==49; 键盘 2==50
 	{
 		try
 		{
@@ -119,7 +119,7 @@ void ComInput::OnImguiRender()
 			resetKeyboards();//因为是按下事件出错，可能弹出提示框，所以清空（保护）
 		}
 	}
-	else if (D3DAPP -> Input()->IsKeyDown(50))
+	else if (GDirectxCore-> Input()->IsKeyDown(50))
 	{
 		try
 		{

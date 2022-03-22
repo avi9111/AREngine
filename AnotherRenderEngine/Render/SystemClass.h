@@ -10,6 +10,7 @@
 #include <functional>
 #include "../Core/Event/EventBase.h"
 //using namespace std;
+
 class SystemClass
 {
 	
@@ -17,7 +18,7 @@ private:
 	LPCWSTR mApplicationName;  //应用名字
 	HINSTANCE mHinstance; //应用实例句柄
 	HWND mHwnd; //应用窗口句柄
-
+	static shared_ptr<SystemClass> m_pDirectxCore;
 private:
 	InputClass* m_Input; //输入类
 	GraphicsClass* m_Graphics; //图形类
@@ -33,6 +34,7 @@ private:
 	void ShutdownWindow();
 
 public:
+	static shared_ptr<SystemClass> Get();
 	//using EventCallback = std::function<void(Event&)>;
 	//EventCallback eventCallback;
 	//void SetEventCallback(const EventCallback& callBack);
@@ -40,6 +42,7 @@ public:
 	bool OnChangeShader(Event& event);
 	InputClass* Input();
 	ModelClass* Model();
+	GraphicsClass* Graphics();
 	/*构造函数*/
 	SystemClass();
 
@@ -67,5 +70,6 @@ public:
 
 /*静态全局变量,这个主要用来进行回调函数的消息传递*/
 
-
+#define GDirectxCore (SystemClass::Get())
+#define g_Graphics (SystemClass::Get()->Graphics())
 #endif 

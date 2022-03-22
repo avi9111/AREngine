@@ -1,5 +1,6 @@
 ﻿#include"GraphicsClass.h"
 #include "TexClass.h"
+#include "../Core/GameObject.h"
 D3DClass* GraphicsClass::D3D()
 {
 	return mD3D;
@@ -61,6 +62,11 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 	//初始化相机的位置
 	mCamera->SetPostion(0.0f, 0.0f, -5.0f); 
 
+	shared_ptr<GameObject> go = shared_ptr<GameObject>(new GameObject());
+	shared_ptr<MeshComponent> mesh = shared_ptr<MeshComponent>(new MeshComponent("TObjects/zuoqi.FBX"));
+	
+	go->SetMesh(mesh);
+	//go->RenderMesh();
 	//第三,创建ModelClass并且初始化
 	mModel = new ModelClass();
 	if (!mModel)

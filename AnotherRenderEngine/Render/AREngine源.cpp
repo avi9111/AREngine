@@ -1,7 +1,8 @@
 ﻿//整个RenderEngine暂时（2022年）基于一个Direct3X的官方书的代码练手入门例子，出处可参考：
 //
+
 #include"SystemClass.h"
-//#include "../Core/ImportFBX.h"
+#include "../Core/ImportFbx2.h"
 
 //#include <SDEngine/Common/DirectxCore.h>//估计此哥们用了directX12（居然可以写include <>）
 //#include "Engine.h"//太多引用，不能用
@@ -10,9 +11,9 @@
 //#include "../Include/log/output_stream.h";
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-	/*string strFbxFileName = "Models/1.fbx";
-	auto m_pFBXModel = shared_ptr<FBXModelData>(new FBXModelData());
-	GImportFBX->ImportFbxFile(strFbxFileName, m_pFBXModel->mModelList);*/
+	string strFbxFileName = "TObjects/zuoqi.fbx";
+	//auto m_pFBXModel = shared_ptr<FBXModelData>(new FBXModelData());
+	GImportFBX->ImportFbxFileTest(strFbxFileName);
 
 
 	//GImportFBX->m_mapFBXModel[strFbxFileName] = m_pFBXModel;
@@ -30,24 +31,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//WindowRegisterClass(hInstance);
 
 	//创建SystemClass类
-	System = new SystemClass;
+	//System = new SystemClass;
 
-	if (!System)
-	{
-		return 0;
-	}
+	//if (!System)
+	//{
+	//	return 0;
+	//}
+
 
 	//初始化和运行系统对象
-	result = System->Initialize();
+	//result = System->Initialize();
+	result = GDirectxCore->Initialize();
 	if (result)
 	{
-		System->Run();
+		//System->Run();
+		GDirectxCore->Run();
 	}
 
 	//关闭systemclass对象
-	System->Shutdown();
-	delete System;
-	System = NULL;
+	//System->Shutdown();
+	GDirectxCore->Shutdown();
+
+	//delete System;
+	//System = NULL;
 	return 0;
 }
 //窗口注册函数，已在SystemClass实现

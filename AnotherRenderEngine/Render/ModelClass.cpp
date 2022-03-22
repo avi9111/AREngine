@@ -2,6 +2,9 @@
 #include "../Maths/matrix.h"
 //属性，用宏写法，参考
 //https://www.cnblogs.com/kenter/archive/2011/09/08/2170516.html
+
+
+//#include "../Core/ImportFbx2.h"
 ModelClass::ModelClass()
 {
     md3dVertexBuffer=NULL; //顶点缓存

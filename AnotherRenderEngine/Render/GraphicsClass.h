@@ -48,4 +48,5 @@ public:
 	void Shutdown();
 	bool Frame(); 
 };
+
 #endif // !_GRAPHICS_CLASS_H
