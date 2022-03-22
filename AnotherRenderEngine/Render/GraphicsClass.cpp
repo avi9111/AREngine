@@ -1,4 +1,4 @@
-#include"GraphicsClass.h"
+ï»¿#include"GraphicsClass.h"
 #include "TexClass.h"
 D3DClass* GraphicsClass::D3D()
 {
@@ -17,7 +17,7 @@ ColorShaderClass* GraphicsClass::Shader()
 
 GraphicsClass::GraphicsClass()
 {
-	//³õÊ¼»¯ËÄ¸öÀàµÄÖ¸Õë
+	//åˆå§‹åŒ–å››ä¸ªç±»çš„æŒ‡é’ˆ
 	mD3D = NULL;
 	mCamera = NULL;
 	mColorShader = NULL;
@@ -38,7 +38,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 {
 	bool result;
 	
-	//µÚÒ»,´´½¨D3DClassÀà²¢ÇÒ³õÊ¼»¯,D3DClassÓ¦¸ÃÊÇµÚÒ»¸ö±»´´½¨²¢ÇÒ³õÊ¼»¯µÄÀà,ÒòÎªºóÃæµÄµÄColroShaderClass,ModelClass¶¼ĞèÒªd3dDeviceºÍd3dDeviceContext
+	//ç¬¬ä¸€,åˆ›å»ºD3DClassç±»å¹¶ä¸”åˆå§‹åŒ–,D3DClassåº”è¯¥æ˜¯ç¬¬ä¸€ä¸ªè¢«åˆ›å»ºå¹¶ä¸”åˆå§‹åŒ–çš„ç±»,å› ä¸ºåé¢çš„çš„ColroShaderClass,ModelClasséƒ½éœ€è¦d3dDeviceå’Œd3dDeviceContext
 	mD3D = new D3DClass();
 	if (!mD3D)
 	{
@@ -52,16 +52,16 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 	}
 
 
-	//µÚ¶ş,´´½¨CameraClassÀà
+	//ç¬¬äºŒ,åˆ›å»ºCameraClassç±»
 	mCamera = new CameraClass();
 	if (!mCamera)
 	{
 		return false;
 	}
-	//³õÊ¼»¯Ïà»úµÄÎ»ÖÃ
+	//åˆå§‹åŒ–ç›¸æœºçš„ä½ç½®
 	mCamera->SetPostion(0.0f, 0.0f, -5.0f); 
 
-	//µÚÈı,´´½¨ModelClass²¢ÇÒ³õÊ¼»¯
+	//ç¬¬ä¸‰,åˆ›å»ºModelClasså¹¶ä¸”åˆå§‹åŒ–
 	mModel = new ModelClass();
 	if (!mModel)
 	{
@@ -73,28 +73,28 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 		MessageBox(hwnd, L"ModelClass Initialize failure", NULL, MB_OK);
 		return false;
 	}
-#pragma region ÖĞ¼ä²åÈëdynamic ÊµÑé´úÂë
+#pragma region ä¸­é—´æ’å…¥dynamic å®éªŒä»£ç 
 
 
 
 	//
-	///////////////////// ¶¯Ì¬Ê¹ÓÃ·½·¨£¬ÓĞĞ©³¤ ///////////////////
+	///////////////////// åŠ¨æ€ä½¿ç”¨æ–¹æ³•ï¼Œæœ‰äº›é•¿ ///////////////////
 	//https://docs.microsoft.com/zh-cn/windows/win32/direct3d9/performance-optimizations?redirectedfrom=MSDN#Using_Dynamic_Vertex_and_Index_Buffers
 	//ID3D11Buffer* mVB1; // stores vertices of type Vertex
 	//auto context = mD3D->GetDeviceContext();
 	//mVB1->
 	//UINT stride = sizeof(mModel->mVertexs);
 	//UINT offset = 0;
-	//context->IASetVertexBuffers(0, 1, &mVB1, &stride, &offset);//IASet Õâ¸ö·½·¨£¬ºóÃæ±¾À´¾Í»áÓÃ
+	//context->IASetVertexBuffers(0, 1, &mVB1, &stride, &offset);//IASet è¿™ä¸ªæ–¹æ³•ï¼Œåé¢æœ¬æ¥å°±ä¼šç”¨
 
 	// USAGE STYLE 1
 	// Discard the entire vertex buffer and refill with thousands of vertices.
 	// Might contain multiple objects and/or require multiple DrawPrimitive 
 	//   calls separated by state changes, etc.
-	//¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡££¨¿ÉÄÜ²»ĞèÒª¶¯Ì¬¸Ä±ä vertexBuffer£¬Ö»ĞèÒª²»Í£±ä¸üÇ°Ãæ¼´¿É
-	//¡£¡£¡£¡£ ÒÑÔÚModel->SetPosition()ÁÙÊ±ÊµÏÖ
+	//ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ï¼ˆå¯èƒ½ä¸éœ€è¦åŠ¨æ€æ”¹å˜ vertexBufferï¼Œåªéœ€è¦ä¸åœå˜æ›´å‰é¢å³å¯
+	//ã€‚ã€‚ã€‚ã€‚ å·²åœ¨Model->SetPosition()ä¸´æ—¶å®ç°
 	//UINT nNumberOfVertices = 4;
-	//int m_nVertexStride = 1;//???ÓĞ´í
+	//int m_nVertexStride = 1;//???æœ‰é”™
 	//// Determine the size of data to be moved into the vertex buffer.
 	//UINT nSizeOfData = nNumberOfVertices * m_nVertexStride;
 	//// Discard and refill the used portion of the vertex buffer.
@@ -111,7 +111,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 
 #pragma endregion
 
-	//µÚËÄ,´´½¨ColorShaderClass,²¢ÇÒ½øĞĞ³õÊ¼»¯
+	//ç¬¬å››,åˆ›å»ºColorShaderClass,å¹¶ä¸”è¿›è¡Œåˆå§‹åŒ–
 	mColorShader = new ColorShaderClass();
 	if (!mColorShader)
 	{
@@ -124,7 +124,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 		return false;
 	}
 
-	//Ìí¼Ó£¬Ê¹ÓÃÎÆÀí
+	//æ·»åŠ ï¼Œä½¿ç”¨çº¹ç†
 	TexClass* tex = new TexClass();
 	tex->Initilize(mD3D->GetDevice(), L"TexturesAndMat/Gun_Texture.png");
 	ID3D11ShaderResourceView* texture = tex->GetTexture();
@@ -150,7 +150,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
-	//ÊÍ·ÅmD3D
+	//é‡Šæ”¾mD3D
 	if (mD3D)
 	{
 		mD3D->Shutdown();
@@ -158,14 +158,14 @@ void GraphicsClass::Shutdown()
 		mD3D = NULL;
 	}
 
-	//ÊÍ·ÅmCamera
+	//é‡Šæ”¾mCamera
 	if (mCamera)
 	{
 		delete mCamera;
 		mCamera = NULL;
 	}
 
-	//ÊÍ·ÅmModel
+	//é‡Šæ”¾mModel
 	if (mModel)
 	{
 		mModel->Shutdown();
@@ -173,7 +173,7 @@ void GraphicsClass::Shutdown()
 		mModel = NULL;
 	}
 
-	//ÊÍ·ÅmColorShader
+	//é‡Šæ”¾mColorShader
 	if (mColorShader)
 	{
 		mColorShader->Shutdown();
@@ -195,17 +195,17 @@ bool GraphicsClass::Frame()
 
 bool GraphicsClass::Render()
 {
-	//Èı¸ö±ä»»¾ØÕó
+	//ä¸‰ä¸ªå˜æ¢çŸ©é˜µ
 	XMMATRIX WorldMatrix, ViewMatrix, ProjMatrix;
 	bool result;
 
-	//µÚÒ»,Çå³ı»º´æ¿ªÊ¼»æÖÆ³¡¾°
+	//ç¬¬ä¸€,æ¸…é™¤ç¼“å­˜å¼€å§‹ç»˜åˆ¶åœºæ™¯
 	mD3D->BeginScene(0.3f, 0.2f, 0.f, 1.0f);
 
-    //µÚ¶ş,Éú³ÉViewMatrix(¸ù¾İCameraClassµÄmPostionºÍmRotationÀ´Éú³ÉµÄ)
+    //ç¬¬äºŒ,ç”ŸæˆViewMatrix(æ ¹æ®CameraClassçš„mPostionå’ŒmRotationæ¥ç”Ÿæˆçš„)
 	mCamera->Render();
 
-	//µÚÈı,»ñÈ¡Èı¸ö±ä»»¾ØÕó(WorldMatrixºÍProjMatrixÀ´×ÔmD3DÀà,ViewMatrixÀ´×ÔCameraClass)
+	//ç¬¬ä¸‰,è·å–ä¸‰ä¸ªå˜æ¢çŸ©é˜µ(WorldMatrixå’ŒProjMatrixæ¥è‡ªmD3Dç±»,ViewMatrixæ¥è‡ªCameraClass)
 
 	WorldMatrix = mD3D->GetWorldMatrix();
 
@@ -213,10 +213,10 @@ bool GraphicsClass::Render()
 
 	ViewMatrix = mCamera->GetViewMatrix();
 
-	//µÚËÄ,ÉèÖÃ¶¥µã»º´æºÍË÷Òı»º´æºÍÍØÆË½á¹¹Ìå
+	//ç¬¬å››,è®¾ç½®é¡¶ç‚¹ç¼“å­˜å’Œç´¢å¼•ç¼“å­˜å’Œæ‹“æ‰‘ç»“æ„ä½“
 	mModel->Render(mD3D->GetDeviceContext());
 
-	//µÚÎå,ÉèÖÃVertexShaderºÍPixelShader£¬InputLayoutÒÔ¼°³£Á¿»º´æµÄÖµ,²¢×îÖÕ½øĞĞ»æÖÆ
+	//ç¬¬äº”,è®¾ç½®VertexShaderå’ŒPixelShaderï¼ŒInputLayout ä»¥åŠå¸¸é‡ç¼“å­˜çš„å€¼,å¹¶æœ€ç»ˆè¿›è¡Œç»˜åˆ¶
 	result = mColorShader->Render(mD3D->GetDeviceContext(),mModel->GetIndexCount(), WorldMatrix, ViewMatrix, ProjMatrix);
 	if (!result)
 	{
@@ -224,7 +224,7 @@ bool GraphicsClass::Render()
 		return false;
 	}
 
-	//°ÑäÖÈ¾µÄ³¡¾°³ÊÏ×¸øÆÁÄ»
+	//æŠŠæ¸²æŸ“çš„åœºæ™¯å‘ˆçŒ®ç»™å±å¹•
 	mD3D->EndScene();
 	return true;
 }

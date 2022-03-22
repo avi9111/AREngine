@@ -1,5 +1,6 @@
 # AREngine
 AREngine 将会是一个可以使用各种shader语言的渲染引擎
+
 AnotherRenderEngine(AREngine) is going to create to engin to render all kind of shader, hlsl or complied shader
 
 # Depencies
@@ -15,7 +16,19 @@ vs 2019 && c++桌面开发工具
 # 界面截图
 ![主界面](Images/main.png)
 
-#项目结构说明
+# Feature:
+IMGUI（没有的）
+
+Input（实现了一个Input组件，AWSD可移动模型，1,2,3可切换shader)
+
+The Whole Render Pipline（有一点）
+
+# 使用说明
+- AWSD移动模型（至少看上去是这样的）
+- 1,2,3切换shader(尝试修改./MyShader.fx 和 ./Shader/s2.fx 再按)
+
+
+# 项目结构说明
 /Core               -   一些C++基础类（c++新手，请高手清喷）
 
 /Include            -   新手引用lib,没成功，现没用
@@ -34,9 +47,4 @@ WindowsProject1.cpp -   旧的入口文件，废弃，请使用Render/AREngine�
 
 WindowsProject1.h   -   旧的入口文件，废弃，请使用Render/AREngine源.h
 
-# Feature:
-IMGUI（没有的）
 
-Input（实现了一个Input组件，AWSD可移动模型，1,2,3可切换shader)
-
-The Whole Render Pipline（有一点）

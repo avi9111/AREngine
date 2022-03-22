@@ -1,21 +1,35 @@
-//Õû¸öRenderEngineÔİÊ±£¨2022Äê£©»ùÓÚÒ»¸öDirect3XµÄ¹Ù·½ÊéµÄ´úÂëÁ·ÊÖÈëÃÅÀı×Ó£¬³ö´¦¿É²Î¿¼£º
+ï»¿//æ•´ä¸ªRenderEngineæš‚æ—¶ï¼ˆ2022å¹´ï¼‰åŸºäºä¸€ä¸ªDirect3Xçš„å®˜æ–¹ä¹¦çš„ä»£ç ç»ƒæ‰‹å…¥é—¨ä¾‹å­ï¼Œå‡ºå¤„å¯å‚è€ƒï¼š
 //
 #include"SystemClass.h"
+//#include "../Core/ImportFBX.h"
+
+//#include <SDEngine/Common/DirectxCore.h>//ä¼°è®¡æ­¤å“¥ä»¬ç”¨äº†directX12ï¼ˆå±…ç„¶å¯ä»¥å†™include <>ï¼‰
+//#include "Engine.h"//å¤ªå¤šå¼•ç”¨ï¼Œä¸èƒ½ç”¨
 //#include "../Include/app.h";
 //#include <stdio.h>;
 //#include "../Include/log/output_stream.h";
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+	/*string strFbxFileName = "Models/1.fbx";
+	auto m_pFBXModel = shared_ptr<FBXModelData>(new FBXModelData());
+	GImportFBX->ImportFbxFile(strFbxFileName, m_pFBXModel->mModelList);*/
+
+
+	//GImportFBX->m_mapFBXModel[strFbxFileName] = m_pFBXModel;
+	
+
+	//GDirectxCore->End();//???directX12??
+	// 
 	//nya_system::app* app = new nya_system::app();
 	//app->start_windowed(100, 100, 800, 600, 0);
-	///ÏëÒıÈëÒ»¸öÒıÇæ£¬.lib .dll¶¼²»³É¹¦£¬ËãÁË
+	///æƒ³å¼•å…¥ä¸€ä¸ªå¼•æ“ï¼Œ.lib .dlléƒ½ä¸æˆåŠŸï¼Œç®—äº†
 
 	SystemClass* System=NULL;
 	bool result;
 
 	//WindowRegisterClass(hInstance);
 
-	//´´½¨SystemClassÀà
+	//åˆ›å»ºSystemClassç±»
 	System = new SystemClass;
 
 	if (!System)
@@ -23,24 +37,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 
-	//³õÊ¼»¯ºÍÔËĞĞÏµÍ³¶ÔÏó
+	//åˆå§‹åŒ–å’Œè¿è¡Œç³»ç»Ÿå¯¹è±¡
 	result = System->Initialize();
 	if (result)
 	{
 		System->Run();
 	}
 
-	//¹Ø±Õsystemclass¶ÔÏó
+	//å…³é—­systemclasså¯¹è±¡
 	System->Shutdown();
 	delete System;
 	System = NULL;
 	return 0;
 }
-//´°¿Ú×¢²áº¯Êı£¬ÒÑÔÚSystemClassÊµÏÖ
+//çª—å£æ³¨å†Œå‡½æ•°ï¼Œå·²åœ¨SystemClasså®ç°
 ////
-////  º¯Êı: MyRegisterClass()
+////  å‡½æ•°: MyRegisterClass()
 ////
-////  Ä¿±ê: ×¢²á´°¿ÚÀà¡£
+////  ç›®æ ‡: æ³¨å†Œçª—å£ç±»ã€‚
 ////
 //ATOM WindowRegisterClass(HINSTANCE hInstance)
 //{

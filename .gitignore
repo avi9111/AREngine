@@ -17,6 +17,8 @@
 /SDEngine一些技术点/
 /DirectX11_Learning-master/
 /Project_origin_bk.zip
+/spdlog-1.x/
+/spdlog-1.x.zip
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 
