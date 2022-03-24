@@ -1,6 +1,8 @@
 ﻿#include"GraphicsClass.h"
 #include "TexClass.h"
 #include "../Core/GameObject.h"
+#include "SystemClass.h"
+shared_ptr<GameObject> mGameObject;
 D3DClass* GraphicsClass::D3D()
 {
 	return mD3D;
@@ -64,9 +66,11 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 
 	shared_ptr<GameObject> go = shared_ptr<GameObject>(new GameObject());
 	shared_ptr<MeshComponent> mesh = shared_ptr<MeshComponent>(new MeshComponent("TObjects/zuoqi.FBX"));
-	
+	//mesh->SetFirstMesh();//测试：：构建最基础的一个四边形 顶点 + index
+	mGameObject = go;
+	GDirectxCore->models.push_back(*go);
 	go->SetMesh(mesh);
-	//go->RenderMesh();
+	go->RenderMesh();
 	//第三,创建ModelClass并且初始化
 	mModel = new ModelClass();
 	if (!mModel)
@@ -117,23 +121,33 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 
 #pragma endregion
 
-	//第四,创建ColorShaderClass,并且进行初始化
-	mColorShader = new ColorShaderClass();
-	if (!mColorShader)
-	{
-		return false;
-	}
-	result = mColorShader->Initialize(mD3D->GetDevice(), hwnd);
-	if (!result)
-	{
-		MessageBox(hwnd, L"mColorClass Initialize failure", NULL, MB_OK);
-		return false;
-	}
+	//第四-0，使用新的ShaderLib
+	mShader2 = make_shared<VertexPixelShader>("MyShader.fx");
+	
+
+	////第四,创建ColorShaderClass,并且进行初始化
+	//// 暂时只支持
+	//// {
+	////	pos;
+	////	uv;
+	//// }
+	//mColorShader = new ColorShaderClass();
+	//if (!mColorShader)
+	//{
+	//	return false;
+	//}
+	//result = mColorShader->Initialize(mD3D->GetDevice(), hwnd);
+	//if (!result)
+	//{
+	//	MessageBox(hwnd, L"mColorClass Initialize failure", NULL, MB_OK);
+	//	return false;
+	//}
 
 	//添加，使用纹理
 	TexClass* tex = new TexClass();
 	tex->Initilize(mD3D->GetDevice(), L"TexturesAndMat/Gun_Texture.png");
 	ID3D11ShaderResourceView* texture = tex->GetTexture();
+	
 	auto d3dDeviceContext = mD3D->GetDeviceContext();
 
 	// Describe the Sample State
@@ -186,6 +200,11 @@ void GraphicsClass::Shutdown()
 		delete mColorShader;
 		mColorShader = NULL;
 	}
+	if (mShader2)
+	{
+		//delete mShader2;
+
+	}
 }
 
 
@@ -198,7 +217,8 @@ bool GraphicsClass::Frame()
 		return false;
 	return true;
 }
-
+bool isLogIndex;
+bool isResetBufferByShader;
 bool GraphicsClass::Render()
 {
 	//三个变换矩阵
@@ -219,15 +239,73 @@ bool GraphicsClass::Render()
 
 	ViewMatrix = mCamera->GetViewMatrix();
 
+	/*
+	* 第四~第五会绘制一个方格，只支持这种Input
+	*	{
+		XMFLOAT3 pos;
+		XMFLOAT2 uv;
+		}
+		同时也屏蔽掉了colorClass的初始化，在GraphicsClass::Initialize（）
+	*/
 	//第四,设置顶点缓存和索引缓存和拓扑结构体
-	mModel->Render(mD3D->GetDeviceContext());
+	//mModel->Render(mD3D->GetDeviceContext());
+	//
+	//
+	////第五,设置VertexShader和PixelShader，InputLayout 以及常量缓存的值,并最终进行绘制
+	//if(isLogIndex==false )
+	//{
+	//	printf("shader indexCount=%d" + mModel->GetIndexCount());
+	//	isLogIndex = true;
+	//}
+	//result = mColorShader->Render(mD3D->GetDeviceContext(),mModel->GetIndexCount(), WorldMatrix, ViewMatrix, ProjMatrix);
+	//if (!result)
+	//{
+	//	MessageBox(NULL, L"ColorShader Render failure", NULL, MB_OK);
+	//	return false;
+	//}
 
-	//第五,设置VertexShader和PixelShader，InputLayout 以及常量缓存的值,并最终进行绘制
-	result = mColorShader->Render(mD3D->GetDeviceContext(),mModel->GetIndexCount(), WorldMatrix, ViewMatrix, ProjMatrix);
-	if (!result)
+	auto worldMatrix = mGameObject->GetWorldMatrix();
+	auto inputLayoutLen = mShader2->mReflectLayoutSize;
+
+	//根据shader改变buffer..和顶点（剔除没用参数，或者补足）
+	if (isResetBufferByShader==false)
 	{
-		MessageBox(NULL, L"ColorShader Render failure", NULL, MB_OK);
-		return false;
+		mGameObject->m_pMesh->ResetBuffer(mShader2->mRefInputLayout);
+		isResetBufferByShader = true;
+	}
+
+	//注意会不停输出， Log模块没做好。。。。。。。。。。
+	//printf("len=%d\n", inputLayoutLen);
+	//printf("lenStride = %d \n", sizeof(VertexPCNTT));
+	UINT ic = mGameObject->RenderTest(inputLayoutLen);
+	bool useOld = false;
+	if(useOld)
+	{ 
+		//旧的shader->render
+		result = mColorShader->Render(mD3D->GetDeviceContext(), ic, worldMatrix, ViewMatrix, ProjMatrix);
+		//(无用) mColorShader->SetShaderParameterOutside(mD3D->GetDeviceContext(), worldMatrix, ViewMatrix, ProjMatrix);
+	}
+	else
+	{
+		//新的shader
+		//这个方法Apply()，缺少matrix,需要先调用？？？ :SetShaderParameterOutside()
+		mShader2->SetMatrix("World", worldMatrix);
+		mShader2->SetMatrix("View", ViewMatrix);
+		mShader2->SetMatrix("Proj", ProjMatrix);
+
+		mShader2->Apply();//IASetInputLayout();->VSSetShader();->PSSetShader()
+
+		////一步步，释出不行原因（找到inputLayout的问题，并解决了还是不知道根本原因）
+		//mColorShader->SetShaderParameterOutside(g_DeviceContext, worldMatrix, ViewMatrix, ProjMatrix);
+		//////不行1：
+		//////mShader2->RenderTradition(worldMatrix, ViewMatrix, ProjMatrix);
+		//////不行2
+		////mShader2->ApplyDirectXOnly();
+		//mShader2->ApplyDirectXOnly(mColorShader->md3dVertexShader,
+		//	mColorShader->md3dPixelShader,
+		//	mColorShader->md3dInputLayout);
+		//渲染三角形（shader render必须）
+		g_DeviceContext->DrawIndexed(ic, 0, 0);
 	}
 
 	//把渲染的场景呈献给屏幕

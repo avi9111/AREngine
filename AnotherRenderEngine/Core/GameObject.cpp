@@ -21,13 +21,40 @@ bool GameObject::Init()
 {
 
 	m_pTransform = shared_ptr<Transform>(new Transform());
+	m_pTransform->localPosition = XMFLOAT3(1, -1, 20);
+	m_pTransform->localScale = XMFLOAT3(0.2, 0.2, 0.2);
 	return true;
 }
 
 void GameObject::Shutdown()
 {
 }
+UINT GameObject::RenderTest(UINT stride) {
+	//XMMATRIX worldMatrix = this->GetWorldMatrix();
+	//设置顶点缓存
+	auto deviceContext = GDirectxCore->Graphics()->D3D()->GetDeviceContext();
+	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
+	ModelData* mModelData = &mModelList[0];
+	UINT count = 0;
+	vector<MeshData>& mMeshList = mModelData->mMeshList;
+	for (UINT i = 0; i < mMeshList.size(); ++i)
+	{
+		MeshData& mesh = mMeshList[i];
+		////每个顶点元素的跨度大小，或者说每个顶点元素的大小
+		//UINT stride = sizeof(mesh.mVertexData[0]);//TODO:这个元素，直接读取 shader 的 InputLayout 的长度
+		UINT offset = 0;
+		deviceContext->IASetVertexBuffers(0, 1, & mesh.mVertexBuffer, &stride, &offset);
+		//设置索引缓存
+		deviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //Word为两个字节
+		//设置拓扑方式
+		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		//deviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
+		count = (UINT)mesh.mIndexData.size();
+	}
+
+	return count;
+}
 void GameObject::Render(RenderMode renderMode)
 {
 	MaterialType eMaterialType = m_pMesh->m_eMaterialType;
@@ -218,7 +245,7 @@ void GameObject::Render(RenderMode renderMode)
 			deviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
 			deviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 			//TODO:ZZZFDF 这个方法暂时应该无用
-			//GDirectxCore->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
+			deviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		}
 	}
 
@@ -238,14 +265,15 @@ void GameObject::RenderMesh()
 
 		for (UINT i = 0; i < mMeshList.size(); ++i)
 		{
-			MeshData& mesh = mMeshList[i];
-			UINT stride = sizeof(mesh.mVertexData[0]);
-			UINT offset = 0;
-			deviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
-			deviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-			//TODO:#define GDirectxCore (DirectxCore::Get())
-			//GDirectxCore->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
-			deviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
+			printf("mesh list i=%d \n", i);
+			//MeshData& mesh = mMeshList[i];
+			//UINT stride = sizeof(mesh.mVertexData[0]);
+			//UINT offset = 0;
+			//deviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
+			//deviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+			////TODO:#define GDirectxCore (DirectxCore::Get())
+			////GDirectxCore->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
+			//deviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		}
 	}
 }

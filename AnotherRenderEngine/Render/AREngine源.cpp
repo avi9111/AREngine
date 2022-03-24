@@ -11,9 +11,9 @@
 //#include "../Include/log/output_stream.h";
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-	string strFbxFileName = "TObjects/zuoqi.fbx";
+	//string strFbxFileName = "TObjects/zuoqi.fbx";
 	//auto m_pFBXModel = shared_ptr<FBXModelData>(new FBXModelData());
-	GImportFBX->ImportFbxFileTest(strFbxFileName);
+	//GImportFBX->ImportFbxFileTest(strFbxFileName);
 
 
 	//GImportFBX->m_mapFBXModel[strFbxFileName] = m_pFBXModel;

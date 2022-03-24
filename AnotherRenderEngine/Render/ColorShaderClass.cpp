@@ -7,7 +7,9 @@
 
 using namespace std;
 
-
+/// <summary>
+/// 原Shader类，增加了一些读二进制测试（个人目标），但现在改用Core/Shader.cpp
+/// </summary>
 ColorShaderClass::ColorShaderClass()
 {
 	 md3dVertexShader=NULL;
@@ -383,7 +385,10 @@ void ColorShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 	MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
 
 }
-
+bool ColorShaderClass::SetShaderParameterOutside(ID3D11DeviceContext* d3dDeviceContext, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, CXMMATRIX projMatrix)
+{
+	return SetShaderParameter(d3dDeviceContext, worldMatrix, viewMatrix, projMatrix);
+}
 
 bool ColorShaderClass::SetShaderParameter(ID3D11DeviceContext* d3dDeviceContext, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, CXMMATRIX ProjMatrix)
 {

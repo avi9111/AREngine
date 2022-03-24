@@ -190,7 +190,7 @@ void ImportFbx2::ProcessMesh(FbxMesh* mesh, MemFBXModelData* fbxModel)
 			int ctrlPointIndex = mesh->GetPolygonVertex(i, j);
 			ReadVertexPos(mesh, ctrlPointIndex, &triangle.vertexs[j].pos);
 			ReadVertexNormal(mesh, ctrlPointIndex, vertexCounter, &triangle.vertexs[j].normal);
-			ReadVertexColor(mesh, ctrlPointIndex, vertexCounter, &triangle.vertexs[j].color);
+			//ReadVertexColor(mesh, ctrlPointIndex, vertexCounter, &triangle.vertexs[j].color);
 			//ReadVertexTangent(mesh, ctrlPointIndex, vertexCounter, &triangle.vertexs[j].tangent);
 			ReadVertexUV(mesh, ctrlPointIndex, mesh->GetTextureUVIndex(i, j), &triangle.vertexs[j].uv);
 			++vertexCounter;
@@ -764,11 +764,11 @@ void ImportFbx2::CalculateTriangleTangent(Triangle& triangle)
 	tangent.y /= length;
 	tangent.z /= length;
 
-	//Tangent
-	for (int i = 0; i < 3; ++i)
-	{
-		triangle.vertexs[i].tangent = tangent;
-	}
+	////Tangent
+	//for (int i = 0; i < 3; ++i)
+	//{
+	//	triangle.vertexs[i].tangent = tangent;
+	//}
 
 }
 

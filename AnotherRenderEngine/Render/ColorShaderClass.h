@@ -23,9 +23,7 @@ private:
 	};
 
 private:
-	ID3D11VertexShader* md3dVertexShader;
-	ID3D11PixelShader* md3dPixelShader;
-	ID3D11InputLayout* md3dInputLayout; //这与VertexShader相关联,因此要放在ColorShaderClass里,而不是D3DClass
+
 	ID3D11Buffer* mCBMatrixBuffer; //(常量)缓存,顶点索引也是用这个类型
 
 private:
@@ -38,6 +36,11 @@ private:
 	void RenderShader(ID3D11DeviceContext*, int);
 
 public:
+	ID3D11VertexShader* md3dVertexShader;
+	ID3D11PixelShader* md3dPixelShader;
+	ID3D11InputLayout* md3dInputLayout; //这与VertexShader相关联,因此要放在ColorShaderClass里,而不是D3DClass
+
+	bool SetShaderParameterOutside(ID3D11DeviceContext*, CXMMATRIX, CXMMATRIX, CXMMATRIX);
 	int ShaderIndex;
 	ColorShaderClass();
 	ColorShaderClass(const ColorShaderClass&);

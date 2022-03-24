@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _GRAPHICS_CLASS_H
 #define _GRAPHICS_CLASS_H
 
@@ -6,13 +6,14 @@
 #include"CameraClass.h"
 #include"ColorShaderClass.h"
 #include"ModelClass.h"
+#include "../Core/ShaderLib/Shader.h"
 
 
-//È«¾Ö±äÁ¿
+//å…¨å±€å˜é‡
 const bool FULL_SCREEN = false;
-const bool VSYNC_ENABLE = true;  //ÊÇ¾¡¿ÉÄÜ¿ìäÖÈ¾»¹ÊÇÏŞÖÆÖ¡äÖÈ¾
-const float SCREEN_FAR = 1000.0f;  //ÊÓ½ØÌåÔ¶²ÃÃæ
-const float SCREEN_NEAR = 0.1f;  //ÊÓ½ØÌå½ü²ÃÃæ
+const bool VSYNC_ENABLE = true;  //æ˜¯å°½å¯èƒ½å¿«æ¸²æŸ“è¿˜æ˜¯é™åˆ¶å¸§æ¸²æŸ“
+const float SCREEN_FAR = 1000.0f;  //è§†æˆªä½“è¿œè£é¢
+const float SCREEN_NEAR = 0.1f;  //è§†æˆªä½“è¿‘è£é¢
 
 
 
@@ -20,24 +21,26 @@ class GraphicsClass
 {
 
 private:
-	//D3DÀà
+	//D3Dç±»
 	D3DClass* mD3D;
 
-	//Ïà»úÀà£¬ÓÃÓÚ¿ØÖÆ³¡¾°µÄÏà»ú
+	//ç›¸æœºç±»ï¼Œç”¨äºæ§åˆ¶åœºæ™¯çš„ç›¸æœº
 	CameraClass* mCamera; 
 
-	//ÓÃÓÚ¿ØÖÆVertexShader PixelShader,InputLayout
+	//ç”¨äºæ§åˆ¶VertexShader PixelShader,InputLayout
 	ColorShaderClass* mColorShader;
-
-	//ÓÃÓÚ¿ØÖÆVertexBufferºÍIndexBuffer
+	
+	//ç”¨äºæ§åˆ¶VertexBufferå’ŒIndexBuffer
 	ModelClass* mModel;
 
 private:
 	bool Render();
 
 public:
+	//ä½¿ç”¨ shaderLib åˆ›å»ºä¸€ä¸ªæµ‹è¯• shader
+	shared_ptr<VertexPixelShader> mShader2;
 	D3DClass* D3D();
-	ModelClass* Model();//ÁÙÊ±µÄ»æÖÆmodel
+	ModelClass* Model();//ä¸´æ—¶çš„ç»˜åˆ¶model
 	ColorShaderClass* Shader();
 	GraphicsClass();
 	GraphicsClass(const GraphicsClass&);

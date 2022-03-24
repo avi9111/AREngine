@@ -1,19 +1,20 @@
-#include"SystemClass.h"
-#include "../Core/ComInput.h"//TODO:Ïà¶ÔÒıÓÃ£¬Òª¸Ä
+ï»¿#include"SystemClass.h"
+#include "../Core/ComInput.h"//TODO:ç›¸å¯¹å¼•ç”¨ï¼Œè¦æ”¹
 #include "../Core/Event/TesterEvent.h"
-//È«¾Ö±äÁ¿
+#include "TexClass.h"
+//å…¨å±€å˜é‡
 //static SystemClass* D3DAPP = NULL;
-// £¿£¿·ÅÔÚÍ·ÎÄ¼ş£¿
+// ï¼Ÿï¼Ÿæ”¾åœ¨å¤´æ–‡ä»¶ï¼Ÿ
 //extern SystemClass* D3DAPP = NULL;
 
-//½ÓÊÜSystemClassÀà¶ÔÏóµÄÈ«¾Ö»Øµ÷º¯Êı
+//æ¥å—SystemClassç±»å¯¹è±¡çš„å…¨å±€å›è°ƒå‡½æ•°
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
 	case WM_DESTROY:
 	{
-		PostQuitMessage(0);  //·¢ËÍWM_QUITÏûÏ¢µ½ÏûÏ¢¶ÓÁĞ ½ÓÊÕµ½WM_QUITÌø³öÏûÏ¢Ñ­»·
+		PostQuitMessage(0);  //å‘é€WM_QUITæ¶ˆæ¯åˆ°æ¶ˆæ¯é˜Ÿåˆ— æ¥æ”¶åˆ°WM_QUITè·³å‡ºæ¶ˆæ¯å¾ªç¯
 		return 0;
 	}
 
@@ -23,7 +24,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 
-	//½«ÆäËüÏûÏ¢´«ËÍµ½D3DAPPÒ²¾ÍÊÇSystemClass¶ÔÏóµÄMessageHandlerº¯Êı
+	//å°†å…¶å®ƒæ¶ˆæ¯ä¼ é€åˆ°D3DAPPä¹Ÿå°±æ˜¯SystemClasså¯¹è±¡çš„MessageHandlerå‡½æ•°
 	default:
 		//return D3DAPP->MessageHandler(hwnd, message, wParam, lParam);
 		return GDirectxCore->MessageHandler(hwnd, message, wParam, lParam);
@@ -33,7 +34,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 /*
 /// <summary>
-/// ¿ÉÒ»Ö±Ê¹ÓÃµÄEventHandler²»Í¬£¬Õâ¸öc++×Ô¶¨ÒåBaseEventµÄÊ¹ÓÃ£ºÓ¦¸ÃÔÚonInput
+/// å¯ä¸€ç›´ä½¿ç”¨çš„EventHandlerä¸åŒï¼Œè¿™ä¸ªc++è‡ªå®šä¹‰BaseEventçš„ä½¿ç”¨ï¼šåº”è¯¥åœ¨onInput
 /// </summary>
 /// <param name="callBack"></param>
 void SystemClass::SetEventCallback(const EventCallback& callBack)
@@ -43,7 +44,7 @@ void SystemClass::SetEventCallback(const EventCallback& callBack)
 
 InputClass* SystemClass::Input(){return m_Input;}
 /// <summary>
-/// TODO:ÁÙÊ±·½·¨
+/// TODO:ä¸´æ—¶æ–¹æ³•
 /// </summary>
 /// <returns></returns>
 ModelClass* SystemClass::Model(){return m_Graphics->Model();}
@@ -61,7 +62,7 @@ SystemClass::SystemClass(const SystemClass& sys)
 
 }
 
-/*²»ÔÚÎö¹¹º¯ÊıÖĞ»ØÊÕÄÚ´æµÄÒ»µãÔ­ÒòÊÇ½÷É÷¶Ô´ıÄÚ´æµÄ»ØÊÕÎÊÌâ*/
+/*ä¸åœ¨ææ„å‡½æ•°ä¸­å›æ”¶å†…å­˜çš„ä¸€ç‚¹åŸå› æ˜¯è°¨æ…å¯¹å¾…å†…å­˜çš„å›æ”¶é—®é¢˜*/
 SystemClass::~SystemClass()
 {
 
@@ -69,12 +70,12 @@ SystemClass::~SystemClass()
 
 void SystemClass::OnEvent(Event& event)
 {
-	//Ã»ÍêÈ«ÓÃ¹ıµÄ´úÂë£¬handler´úÂë¿É²Î¿¼´úÂë£º
-	//´¦Àí´úÂë£¬Àı×Ó1
+	//æ²¡å®Œå…¨ç”¨è¿‡çš„ä»£ç ï¼Œhandlerä»£ç å¯å‚è€ƒä»£ç ï¼š
+	//å¤„ç†ä»£ç ï¼Œä¾‹å­1
 	//EventDispatcher dispatcher(event);
 	//dispatcher.Dispath<WindowCloseEvent>(BIND_EVENT(Game::OnClose, this));
 
-	//´¦Àí´úÂë£¬Àı×Ó2
+	//å¤„ç†ä»£ç ï¼Œä¾‹å­2
 /*	if (!event.bHandled)
 	{
 	}*/
@@ -88,19 +89,49 @@ bool SystemClass::OnChangeShader(Event& event)
 	bool initResult = true;
 	switch (eve->key)
 	{
-	case 49:
-		
-		shader->ShaderIndex = 1;
-		initResult = shader->Initialize(m_Graphics->D3D()->GetDevice(), mHwnd);
+	case 49://num 1
+		if (shader)
+		{
+			shader->ShaderIndex = 1;
+			initResult = shader->Initialize(m_Graphics->D3D()->GetDevice(), mHwnd);
+		}
+		m_Graphics->mShader2->Init("MyShader.fx");
+		m_Graphics->mShader2->Apply();
 		break;
-	case 50:
-		shader->ShaderIndex = 2;
-		initResult = shader->Initialize(m_Graphics->D3D()->GetDevice(), mHwnd);
+	case 51://num 3
+		m_Graphics->mShader2->Init("Shader/s3.fx");
+		m_Graphics->mShader2->Apply();
 		break;
-	case 51 :
+	case 50://num 2
+		if (shader)
+		{
+			shader->ShaderIndex = 2;
+			initResult = shader->Initialize(m_Graphics->D3D()->GetDevice(), mHwnd);
+		}
+		m_Graphics->mShader2->Init("Shader/s2.fx");
+		TexClass* tex = new TexClass();
+		tex->Initilize(g_Device, L"TexturesAndMat/Gun_Texture.png");
+		ID3D11ShaderResourceView* texture = tex->GetTexture();
+	
+		m_Graphics->mShader2->Apply();
+
+		D3D11_SAMPLER_DESC sampDesc;
+		ZeroMemory(&sampDesc, sizeof(sampDesc));
+		sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		sampDesc.MinLOD = 0;
+		sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		ID3D11SamplerState* textureState;
+		auto hr = g_Device->CreateSamplerState(&sampDesc, &textureState);
+		bool isset = m_Graphics->mShader2->SetTexture("ShaderTexture", texture);
+		printf("è®¾ç½®shader texture %d \n", isset);
 		break;
-	default:
-		break;
+
+	//default:
+	//	break;
 	}
 	if (initResult == false) {
 		throw exception("shader compile error");
@@ -108,7 +139,7 @@ bool SystemClass::OnChangeShader(Event& event)
 	return true;
 }
 
-/*ÏµÍ³Àà³õÊ¼»¯º¯Êı*/
+/*ç³»ç»Ÿç±»åˆå§‹åŒ–å‡½æ•°*/
 bool SystemClass::Initialize()
 {
 
@@ -116,14 +147,14 @@ bool SystemClass::Initialize()
 	int ScreenWidth, ScreenHeight;
 	bool result;
 
-	/*³õÊ¼»¯ÆÁÄ»¿í¶ÈºÍ¸ß¶È*/
+	/*åˆå§‹åŒ–å±å¹•å®½åº¦å’Œé«˜åº¦*/
 	ScreenWidth = 0;
 	ScreenHeight = 0;
 
-	/*³õÊ¼»¯ÏµÍ³ÀàµÄ´°¿Ú*/
+	/*åˆå§‹åŒ–ç³»ç»Ÿç±»çš„çª—å£*/
 	InitializeWindow(ScreenWidth, ScreenHeight);
 
-	/*´´½¨ÊäÈëÀà¶ÔÏó*/
+	/*åˆ›å»ºè¾“å…¥ç±»å¯¹è±¡*/
 	m_Input = new InputClass();
 	if (!m_Input)
 	{
@@ -136,17 +167,17 @@ bool SystemClass::Initialize()
 	m_LayerManager->PushLayer(shared_ptr<ComInput>( component));
 
 
-	/*³õÊ¼»¯ÊäÈë¶ÔÏó*/
+	/*åˆå§‹åŒ–è¾“å…¥å¯¹è±¡*/
 	m_Input->Initialize();
 
-	/*´´½¨Í¼ĞÎÀà¶ÔÏó*/
+	/*åˆ›å»ºå›¾å½¢ç±»å¯¹è±¡*/
 	m_Graphics = new GraphicsClass();
 	if (!m_Graphics)
 	{
 		return false;
 	}
 		
-	/*³õÊ¼»¯Í¼ĞÎ¶ÔÏó,·¢ÉúÔÚ´°¿Ú³õÊ¼»¯Ö®ºó,ÒòÎª´°¿Ú³õÊ¼»¯Ö®ºó,´°¿Ú¾ä±ú²Å±»½¨Á¢*/
+	/*åˆå§‹åŒ–å›¾å½¢å¯¹è±¡,å‘ç”Ÿåœ¨çª—å£åˆå§‹åŒ–ä¹‹å,å› ä¸ºçª—å£åˆå§‹åŒ–ä¹‹å,çª—å£å¥æŸ„æ‰è¢«å»ºç«‹*/
 	result=m_Graphics->Initialize(ScreenWidth, ScreenHeight, mHwnd);
 	if (!result)
 	{
@@ -158,7 +189,7 @@ bool SystemClass::Initialize()
 
 void SystemClass::Shutdown()
 {
-	/*ÊÍ·ÅÍ¼ĞÎÀà¶ÔÏó*/
+	/*é‡Šæ”¾å›¾å½¢ç±»å¯¹è±¡*/
 	if (m_Graphics)
 	{
 		m_Graphics->Shutdown();
@@ -166,14 +197,14 @@ void SystemClass::Shutdown()
 		m_Graphics = NULL;
 	}
 
-	/*ÊÍ·ÅÊäÈëÀà¶ÔÏó*/
+	/*é‡Šæ”¾è¾“å…¥ç±»å¯¹è±¡*/
 	if (m_Input)
 	{
 		delete m_Input;
 		m_Input = NULL;
 	}
 
-	/*¹Ø±Õ´°¿Ú*/
+	/*å…³é—­çª—å£*/
 	this->ShutdownWindow();
 }
 
@@ -182,11 +213,11 @@ void SystemClass::Run()
 	MSG msg = { 0 };
 	bool done, result;
 
-	/*Ñ­»·Ö±µ½ÊÕµ½À´×Ô´°¿ÚµÄ»òÕßÊ¹ÓÃÕßµÄquitÏûÏ¢*/
+	/*å¾ªç¯ç›´åˆ°æ”¶åˆ°æ¥è‡ªçª—å£çš„æˆ–è€…ä½¿ç”¨è€…çš„quitæ¶ˆæ¯*/
 	done = false;
 	while (!done)
 	{
-		//²Ù×÷´°¿ÚÏûÏ¢
+		//æ“ä½œçª—å£æ¶ˆæ¯
 		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
@@ -194,7 +225,7 @@ void SystemClass::Run()
 				done = true;
 			}	
 			TranslateMessage(&msg);
-			DispatchMessage(&msg);       //°ÑÏûÏ¢·¢ËÍµ½WindProc()ÖĞ
+			DispatchMessage(&msg);       //æŠŠæ¶ˆæ¯å‘é€åˆ°WindProc()ä¸­
 		}
 		else
 		{
@@ -202,7 +233,7 @@ void SystemClass::Run()
 			{
 				(*it)->OnImguiRender();
 			}
-			result = Frame();  //FrameÔËĞĞµÄº¯Êı¿ÉÄÜÔì³ÉÓÎÏ·ÍË³ö
+			result = Frame();  //Frameè¿è¡Œçš„å‡½æ•°å¯èƒ½é€ æˆæ¸¸æˆé€€å‡º
 			if (!result)
 			{
 				done = true;
@@ -217,13 +248,13 @@ bool SystemClass::Frame()
 	bool result;
 
 	
-	//Äã°´ÏÂÁËÍË³öº¯Êı,ÔòÍË³öÕâ¸öÓ¦ÓÃ(°´¼üµÄºê¸ÕºÃÏà¶ÔÓ¦)
+	//ä½ æŒ‰ä¸‹äº†é€€å‡ºå‡½æ•°,åˆ™é€€å‡ºè¿™ä¸ªåº”ç”¨(æŒ‰é”®çš„å®åˆšå¥½ç›¸å¯¹åº”)
 	if (m_Input->IsKeyDown(VK_ESCAPE))
 	{
 		return false;
 	}
 	
-	//½øĞĞÍ¼ĞÎ¶ÔÏóµÄÖ¡º¯Êı
+	//è¿›è¡Œå›¾å½¢å¯¹è±¡çš„å¸§å‡½æ•°
 	result = m_Graphics->Frame();
 	if (!result)
 	{
@@ -237,30 +268,30 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wPa
 {
 	switch (message)
 	{
-		//ÏûÏ¢´¦Àí¿É²Î¿¼sdEngine×îĞÂ
+		//æ¶ˆæ¯å¤„ç†å¯å‚è€ƒsdEngineæœ€æ–°
 		// GameWindow.cpp
-		//WM_CHAR ºÍ WM_keydownµÄÎÊÌâ¹Û²ì
+		//WM_CHAR å’Œ WM_keydownçš„é—®é¢˜è§‚å¯Ÿ
 		//https://bbs.csdn.net/topics/60387619
-	   //È·ÈÏÒ»¸ö¼üÒÑ¾­ÔÚ¼üÅÌÉÏ°´ÏÂ
+	   //ç¡®è®¤ä¸€ä¸ªé”®å·²ç»åœ¨é”®ç›˜ä¸ŠæŒ‰ä¸‹
 	   case WM_KEYDOWN:
 	  {
 		   if (wParam == VK_ESCAPE)
 		   {
 		   }
-		  //Èç¹ûÒ»¸ö¼ü±»°´ÏÂ,Ôò½«Õâ¸ö¼üµÄĞÅÏ¢ËÍµ½input object,ÎªÁË¿ÉÒÔ¼ÇÂ¼Õâ¸ö×´Ì¬
-		  m_Input->KeyDown((unsigned int)wParam);//ËùÓĞ×Ö·û¶¼ÊÇ £¬229,ÎŞ½â¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£
+		  //å¦‚æœä¸€ä¸ªé”®è¢«æŒ‰ä¸‹,åˆ™å°†è¿™ä¸ªé”®çš„ä¿¡æ¯é€åˆ°input object,ä¸ºäº†å¯ä»¥è®°å½•è¿™ä¸ªçŠ¶æ€
+		  m_Input->KeyDown((unsigned int)wParam);//æ‰€æœ‰å­—ç¬¦éƒ½æ˜¯ ï¼Œ229,æ— è§£ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚
 		  return 0;
 	  }
 
-	   //È·ÈÏÒ»¸ö¼ü±»ÊÍ·Å
+	   //ç¡®è®¤ä¸€ä¸ªé”®è¢«é‡Šæ”¾
 	   case WM_KEYUP:
 	   {
-		   //Èç¹ûÒ»¸ö¼ü±»ÊÍ·Å,Ôò½«Õâ¸ö¼üµÄĞÅÏ¢ËÍµ½input object,ÎªÁË¿ÉÒÔÈ¡ÏûÕâ¸ö×´Ì¬
+		   //å¦‚æœä¸€ä¸ªé”®è¢«é‡Šæ”¾,åˆ™å°†è¿™ä¸ªé”®çš„ä¿¡æ¯é€åˆ°input object,ä¸ºäº†å¯ä»¥å–æ¶ˆè¿™ä¸ªçŠ¶æ€
 		   m_Input->KeyUp((unsigned int)wParam);
-		   //²»ÖªµÀ WM_KEYUP£¬WM_CHARµÄ¹ØÏµ
-		   //ÓĞµãÉµÉµ¸ã²»Çå³ş
-		   //ÔİÊ±£¬Ç¿ÖÆ°ÑËùÓĞ°´¼ü¶¼»¹Ô­
-		   //£¨WM_KEYUP Ê±£¬wParamÓÖ²»¹Ì¶¨£¬Ò²²îwm_char²»ÏàÍ¬¡£¡£¡£¡£¡£¡£¡££©
+		   //ä¸çŸ¥é“ WM_KEYUPï¼ŒWM_CHARçš„å…³ç³»
+		   //æœ‰ç‚¹å‚»å‚»æä¸æ¸…æ¥š
+		   //æš‚æ—¶ï¼Œå¼ºåˆ¶æŠŠæ‰€æœ‰æŒ‰é”®éƒ½è¿˜åŸ
+		   //ï¼ˆWM_KEYUP æ—¶ï¼ŒwParamåˆä¸å›ºå®šï¼Œä¹Ÿå·®wm_charä¸ç›¸åŒã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ï¼‰
 		  // if (wParam == 229) {
 			   for (int i = 0; i < 200; i++)
 			   {
@@ -274,10 +305,10 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wPa
 		   m_Input->KeyDown((unsigned int)wParam);
 		   return 0;
 	   }
-	   //ÆäËüµÄÏûÏ¢±»ËÍµ½Ä¬ÈÏ´¦ÀíÏûÏ¢º¯Êı
+	   //å…¶å®ƒçš„æ¶ˆæ¯è¢«é€åˆ°é»˜è®¤å¤„ç†æ¶ˆæ¯å‡½æ•°
 	   default:
 	   {
-		   return DefWindowProc(hwnd, message, wParam, lParam); //ÎªÈ«¾Ö¾²Ì¬º¯Êı
+		   return DefWindowProc(hwnd, message, wParam, lParam); //ä¸ºå…¨å±€é™æ€å‡½æ•°
 	   }
 	}
 }
@@ -290,16 +321,16 @@ void SystemClass::InitializeWindow(int& ScrrenWidth, int &ScrrenHeight)
 	DEVMODE dmScrrenSettings;
 	int posX, posY;
 
-	//»ñÈ¡Ò»¸ö¶îÍâµÄÖ¸ÏòÕâ¸ö¶ÔÏóµÄÖ¸Õë
+	//è·å–ä¸€ä¸ªé¢å¤–çš„æŒ‡å‘è¿™ä¸ªå¯¹è±¡çš„æŒ‡é’ˆ
 	//D3DAPP = this;   
 
-	//»ñÈ¡Ó¦ÓÃÊµÀı¾ä±ú
+	//è·å–åº”ç”¨å®ä¾‹å¥æŸ„
 	mHinstance = GetModuleHandle(NULL);
 
-	//¸øÓèÓ¦ÓÃÒ»¸öÃû×Ö
+	//ç»™äºˆåº”ç”¨ä¸€ä¸ªåå­—
 	mApplicationName = L"Engine";
 
-	//Éè¶¨Òª´´½¨µÄÀàµÄÊôĞÔ	
+	//è®¾å®šè¦åˆ›å»ºçš„ç±»çš„å±æ€§	
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
@@ -313,17 +344,17 @@ void SystemClass::InitializeWindow(int& ScrrenWidth, int &ScrrenHeight)
 	wc.lpszClassName = mApplicationName;
 	wc.cbSize = sizeof(WNDCLASSEX);
 
-	//×¢²áÕâ¸öÀà
+	//æ³¨å†Œè¿™ä¸ªç±»
 	RegisterClassEx(&wc);
 
-	//»ñÈ¡ÆÁÄ»·Ö±æÂÊµÄ¿í¶ÈºÍ¸ß¶È
+	//è·å–å±å¹•åˆ†è¾¨ç‡çš„å®½åº¦å’Œé«˜åº¦
 	ScrrenWidth = GetSystemMetrics(SM_CXSCREEN);
 	ScrrenHeight= GetSystemMetrics(SM_CYSCREEN);
 
-	//È¡¾öÓÚÊÇ·ñÎªÈ«ÆÁÄ»
+	//å–å†³äºæ˜¯å¦ä¸ºå…¨å±å¹•
 	if (FULL_SCREEN)
 	{
-		//Èç¹ûÎªÈ«ÆÁÄ»,ÔòÉè¶¨ÆÁÄ»ÎªÓÃ»§×ÀÃæµÄ×î´ó»¯²¢ÇÒÎª32bit
+		//å¦‚æœä¸ºå…¨å±å¹•,åˆ™è®¾å®šå±å¹•ä¸ºç”¨æˆ·æ¡Œé¢çš„æœ€å¤§åŒ–å¹¶ä¸”ä¸º32bit
 		memset(&dmScrrenSettings, 0, sizeof(dmScrrenSettings));
 		dmScrrenSettings.dmSize = sizeof(dmScrrenSettings);
 		dmScrrenSettings.dmPelsWidth = (unsigned long)ScrrenWidth;
@@ -331,58 +362,58 @@ void SystemClass::InitializeWindow(int& ScrrenWidth, int &ScrrenHeight)
 		dmScrrenSettings.dmBitsPerPel = 32;
 		dmScrrenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
-		//¸Ä±äÏÔÊ¾Éè¶¨,ÉèÖÃÎªÈ«ÆÁÄ»
+		//æ”¹å˜æ˜¾ç¤ºè®¾å®š,è®¾ç½®ä¸ºå…¨å±å¹•
 		ChangeDisplaySettings(&dmScrrenSettings, CDS_FULLSCREEN);
 
-		//Éè¶¨´°¿Ú×óÉÏ½ÇµÄÎ»ÖÃ
+		//è®¾å®šçª—å£å·¦ä¸Šè§’çš„ä½ç½®
 		posX = posY = 0;
 	}
 	else
 	{
-		//Èç¹û´°¿Ú»¯,Éè¶¨Îª800*600·Ö±æÂÊ
+		//å¦‚æœçª—å£åŒ–,è®¾å®šä¸º800*600åˆ†è¾¨ç‡
 		ScrrenWidth = 800;
 		ScrrenHeight = 600;
 
-		//´°¿ÚÎ»ÓÚÆÁÄ»ÉÔÎ¢µÄ×óÉÏ·½
+		//çª—å£ä½äºå±å¹•ç¨å¾®çš„å·¦ä¸Šæ–¹
 		posX = (GetSystemMetrics(SM_CXSCREEN) - ScrrenWidth) / 2-200;
 		posY = (GetSystemMetrics(SM_CYSCREEN) - ScrrenHeight) / 2-100;
 
 	}
 
-	//´´½¨´°¿Ú,²¢ÇÒ»ñÈ¡´°¿ÚµÄ¾ä±ú
+	//åˆ›å»ºçª—å£,å¹¶ä¸”è·å–çª—å£çš„å¥æŸ„
 	mHwnd = CreateWindowEx(WS_EX_APPWINDOW, mApplicationName, mApplicationName,
 		WS_OVERLAPPEDWINDOW,
 		posX, posY, ScrrenWidth, ScrrenHeight, NULL, NULL, mHinstance, NULL);
 
-	//½«´°¿ÚÏÔÊ¾ÓÚÆÁÄ»Ö®ÉÏ,²¢Éè¶¨¸Ã´°¿ÚÎªÖ÷Òª¼¯ÖĞµã
+	//å°†çª—å£æ˜¾ç¤ºäºå±å¹•ä¹‹ä¸Š,å¹¶è®¾å®šè¯¥çª—å£ä¸ºä¸»è¦é›†ä¸­ç‚¹
 	ShowWindow(mHwnd, SW_SHOW);
 	SetForegroundWindow(mHwnd);
 	SetFocus(mHwnd);
 
-	//Òş²ØÊó±ê¹â±ê
+	//éšè—é¼ æ ‡å…‰æ ‡
 	//ShowCursor(false);
 }
 
 void SystemClass::ShutdownWindow()
 {
-	//ÏÔÊ¾Êó±ê¹â±ê
+	//æ˜¾ç¤ºé¼ æ ‡å…‰æ ‡
 	//ShowCursor(true);
 
-	//Èç¹ûÀë¿ªÈ«ÆÁÄ»Ä£Ê½,»Ö¸´ÏÔÊ¾Éè¶¨
+	//å¦‚æœç¦»å¼€å…¨å±å¹•æ¨¡å¼,æ¢å¤æ˜¾ç¤ºè®¾å®š
 	if (FULL_SCREEN)
 	{
 		ChangeDisplaySettings(NULL, 0);
 	}
 
-	//ÒÆ³ı(ÆÆ»µ)´°¿Ú
+	//ç§»é™¤(ç ´å)çª—å£
 	DestroyWindow(mHwnd);
 	mHwnd = NULL;
 
-	//ÒÆ³ı³ÌĞòÊµÀı
+	//ç§»é™¤ç¨‹åºå®ä¾‹
 	UnregisterClass(mApplicationName, mHinstance);
 	mHinstance = NULL;
 
-	//ÖÃ¿ÕÓ¦ÓÃÀà¶ÔÏó
+	//ç½®ç©ºåº”ç”¨ç±»å¯¹è±¡
 	//D3DAPP = NULL;
 
 }

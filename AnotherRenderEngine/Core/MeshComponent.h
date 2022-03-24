@@ -48,6 +48,9 @@ private:
 	void InitBuffer();
 
 public:
+	void SetFirstMesh();
+	MeshData& GetFirstMesh();
+	void ResetBuffer(vector<D3D11_INPUT_ELEMENT_DESC> desc);
 	void SetMesh(const string& meshFile);
 	void SetTexture(string fileName, TextureType textureType);
 	void SetAlbedoTexture(string fileName);

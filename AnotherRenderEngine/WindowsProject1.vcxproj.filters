@@ -111,6 +111,12 @@
     <ClInclude Include="Core\MeshComponent.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Core\ShaderLib\Shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CommonFunction.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowsProject1.cpp">
@@ -165,6 +171,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Core\MeshComponent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ShaderLib\Shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\CommonFunction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

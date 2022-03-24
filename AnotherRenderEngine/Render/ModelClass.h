@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _MODEL_CLASS_H
 #define _MODEL_CLASS_H
 
@@ -20,8 +20,8 @@ private:
 	XMFLOAT3 mPosition;
 
 private:
-	ID3D11Buffer* md3dVertexBuffer; //¶¥µã»º´æ
-	ID3D11Buffer* md3dIndexBuffer;  //Ë÷Òı»º´æ
+	ID3D11Buffer* md3dVertexBuffer; //é¡¶ç‚¹ç¼“å­˜
+	ID3D11Buffer* md3dIndexBuffer;  //ç´¢å¼•ç¼“å­˜
 	int mVertexCount;
 	int mIndexCount;
 
@@ -33,6 +33,9 @@ private:
 	float* ToMatrixOffset(Vertex vec, XMFLOAT3 pos);
 	ID3D11Device* device;
 public:
+	/// <summary>
+	/// ä¿æŒä¸Šä¸€ä¸ªé¡¶ç‚¹ä½ç½®ï¼Œåšvertexåç§»ç”¨ï¼ˆåº”è¯¥å¯ä»¥ç”¨æŒ‡é’ˆå¤„ç†ï¼‰
+	/// </summary>
 	Vertex* mVertexs;
 	ModelClass();
 	ModelClass(const ModelClass&);
@@ -41,7 +44,7 @@ public:
 public:
 	void SetPosition(XMFLOAT3 v);
 	XMFLOAT3 GetPosition();
-	//InitializeÊÇ´´½¨ÔªËØ,RenderÊÇÉèÖÃÔªËØ,ShutdownÊÇRelease
+	//Initializeæ˜¯åˆ›å»ºå…ƒç´ ,Renderæ˜¯è®¾ç½®å…ƒç´ ,Shutdownæ˜¯Release
 	bool Initialize(ID3D11Device* d3dDevice);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* d3dDeviceContext);

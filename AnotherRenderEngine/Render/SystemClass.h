@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _SYSTEM_CLASS_H
 #define _SYSTEM_CLASS_H
-#define WIN32_LEAN_AND_MEAN  //Õâ¸öºê¿ÉÒÔ¼õÉÙWin32Í·ÎÄ¼şµÄ´óĞ¡
+#define WIN32_LEAN_AND_MEAN  //è¿™ä¸ªå®å¯ä»¥å‡å°‘Win32å¤´æ–‡ä»¶çš„å¤§å°
 
 #include"InputClass.h"
 #include<Windows.h>  
@@ -9,28 +9,29 @@
 #include "../Core/LayerManager.h"
 #include <functional>
 #include "../Core/Event/EventBase.h"
+#include "../Core/GameObject.h"
 //using namespace std;
 
 class SystemClass
 {
 	
 private:
-	LPCWSTR mApplicationName;  //Ó¦ÓÃÃû×Ö
-	HINSTANCE mHinstance; //Ó¦ÓÃÊµÀı¾ä±ú
-	HWND mHwnd; //Ó¦ÓÃ´°¿Ú¾ä±ú
+	LPCWSTR mApplicationName;  //åº”ç”¨åå­—
+	HINSTANCE mHinstance; //åº”ç”¨å®ä¾‹å¥æŸ„
+	HWND mHwnd; //åº”ç”¨çª—å£å¥æŸ„
 	static shared_ptr<SystemClass> m_pDirectxCore;
 private:
-	InputClass* m_Input; //ÊäÈëÀà
-	GraphicsClass* m_Graphics; //Í¼ĞÎÀà
+	InputClass* m_Input; //è¾“å…¥ç±»
+	GraphicsClass* m_Graphics; //å›¾å½¢ç±»
 	LayerManager* m_LayerManager;
 private:
-	//Ö¡º¯Êı
+	//å¸§å‡½æ•°
 	bool Frame();
 
-	//³õÊ¼»¯´°¿Úº¯Êı
+	//åˆå§‹åŒ–çª—å£å‡½æ•°
 	void InitializeWindow(int&, int&);
 
-	//¹Ø±Õ´°¿Úº¯Êı
+	//å…³é—­çª—å£å‡½æ•°
 	void ShutdownWindow();
 
 public:
@@ -42,34 +43,37 @@ public:
 	bool OnChangeShader(Event& event);
 	InputClass* Input();
 	ModelClass* Model();
+	vector<GameObject> models;
 	GraphicsClass* Graphics();
-	/*¹¹Ôìº¯Êı*/
+	/*æ„é€ å‡½æ•°*/
 	SystemClass();
 
-	/*¿½±´¹¹Ôìº¯Êı*/
+	/*æ‹·è´æ„é€ å‡½æ•°*/
 	SystemClass(const SystemClass&);
 
-	/*Îö¹¹º¯Êı*/
+	/*ææ„å‡½æ•°*/
 	~SystemClass();
 
-	/*³õÊ¼»¯º¯Êı*/
+	/*åˆå§‹åŒ–å‡½æ•°*/
 	bool Initialize();
 
-	/*¹Ø±ÕÓ¦ÓÃº¯Êı*/
+	/*å…³é—­åº”ç”¨å‡½æ•°*/
 	void Shutdown();
 
-	/*ÔËĞĞº¯Êı*/
+	/*è¿è¡Œå‡½æ•°*/
 	void Run();
 
-	/*ÏûÏ¢²Ù×÷º¯Êı,ÕâÀïÕâ¸öº¯Êı½ÓÊÜµÄÏûÏ¢ºÜ¶à´«µİ¸øÈ«¾Ö¾²Ì¬º¯ÊıWndProc´¦Àí,Õâ¸ö»Øµ÷º¯ÊıÓĞĞ©ÌØÊâ,Çë×¢Òâ*/
+	/*æ¶ˆæ¯æ“ä½œå‡½æ•°,è¿™é‡Œè¿™ä¸ªå‡½æ•°æ¥å—çš„æ¶ˆæ¯å¾ˆå¤šä¼ é€’ç»™å…¨å±€é™æ€å‡½æ•°WndProcå¤„ç†,è¿™ä¸ªå›è°ƒå‡½æ•°æœ‰äº›ç‰¹æ®Š,è¯·æ³¨æ„*/
 	LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 };
 
-/*¾²Ì¬»Øµ÷º¯Êı*/
+/*é™æ€å›è°ƒå‡½æ•°*/
 //static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-/*¾²Ì¬È«¾Ö±äÁ¿,Õâ¸öÖ÷ÒªÓÃÀ´½øĞĞ»Øµ÷º¯ÊıµÄÏûÏ¢´«µİ*/
+/*é™æ€å…¨å±€å˜é‡,è¿™ä¸ªä¸»è¦ç”¨æ¥è¿›è¡Œå›è°ƒå‡½æ•°çš„æ¶ˆæ¯ä¼ é€’*/
 
 #define GDirectxCore (SystemClass::Get())
 #define g_Graphics (SystemClass::Get()->Graphics())
+#define g_Device (SystemClass::Get()->Graphics()->D3D()->GetDevice())
+#define g_DeviceContext (SystemClass::Get()->Graphics()->D3D()->GetDeviceContext())
 #endif 

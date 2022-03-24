@@ -80,30 +80,56 @@ void ComInput::OnImguiRender()
 {
 	auto input = GDirectxCore->Input();
 	float moveStep = 0.001;
-	if (GDirectxCore->Input()->IsKeyDown(119))
+	if (GDirectxCore->Input()->IsKeyDown(119))//W??
 	{
 		auto pos = GDirectxCore->Model()->GetPosition();
 		pos.y += moveStep;
 		GDirectxCore->Model()->SetPosition(pos);
+
+		auto p2 = GDirectxCore->models[0].m_pTransform->localPosition;
+		p2.y += 1;
+		GDirectxCore->models[0].m_pTransform->localPosition.y = p2.y;
 	}
-	else if (GDirectxCore->Input()->IsKeyDown(115))
+	else if (GDirectxCore->Input()->IsKeyDown(115))//S??
 	{
 		auto pos = GDirectxCore->Model()->GetPosition();
 		pos.y -= moveStep;
 		GDirectxCore->Model()->SetPosition(pos);
+		auto p2 = GDirectxCore->models[0].m_pTransform->localPosition;
+		p2.y -= 1;
+		GDirectxCore->models[0].m_pTransform->localPosition = p2;
 	}
-	else if (GDirectxCore->Input()->IsKeyDown(97)) {
+	else if (GDirectxCore->Input()->IsKeyDown(97)) {//A??
 		auto pos = GDirectxCore->Model()->GetPosition();
 		pos.x -= moveStep;
 		GDirectxCore->Model()->SetPosition(pos);
+		auto p2 = GDirectxCore->models[0].m_pTransform->localPosition;
+		p2.x -= 1;
+		GDirectxCore->models[0].m_pTransform->localPosition = p2;
 	}
-	else if (GDirectxCore->Input()->IsKeyDown(100))
+	else if (GDirectxCore->Input()->IsKeyDown(100))//D??
 	{
 		auto pos = GDirectxCore->Model()->GetPosition();
 		pos.x += moveStep;
 		GDirectxCore->Model()->SetPosition(pos);
+
+		auto p2 = GDirectxCore->models[0].m_pTransform->localPosition;
+		p2.x += 1;
+		GDirectxCore->models[0].m_pTransform->localPosition = p2;
 	}
-	else if (GDirectxCore->Input()->IsKeyDown(49))//键盘 1==49; 键盘 2==50
+	else if (GDirectxCore->Input()->IsKeyDown(53))//num 5??
+	{
+		auto p2 = GDirectxCore->models[0].m_pTransform->localPosition;
+		p2.z -= 1;
+		GDirectxCore->models[0].m_pTransform->localPosition = p2;
+	}
+	else if (GDirectxCore->Input()->IsKeyDown(54))
+	{
+		auto p2 = GDirectxCore->models[0].m_pTransform->localPosition;
+		p2.z += 1;
+		GDirectxCore->models[0].m_pTransform->localPosition = p2;
+	}
+	if (GDirectxCore->Input()->IsKeyDown(49))//键盘 1==49; 键盘 2==50
 	{
 		try
 		{
@@ -125,6 +151,18 @@ void ComInput::OnImguiRender()
 		{
 			TesterEvent event;
 			event.key = 50;
+			eventCallback(event);
+		}
+		catch (exception ex) {
+			resetKeyboards();//因为是按下事件出错，可能弹出提示框，所以清空（保护）
+		}
+	}
+	else if (GDirectxCore->Input()->IsKeyDown(51))
+	{
+		try
+		{
+			TesterEvent event;
+			event.key = 51;
 			eventCallback(event);
 		}
 		catch (exception ex) {

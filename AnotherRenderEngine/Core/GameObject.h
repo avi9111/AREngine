@@ -37,6 +37,7 @@ public:
 	
 	void Shutdown();
 	
+	UINT RenderTest(UINT stride);
 	void Render(RenderMode renderMode = RenderMode::UseMaterial);
 	
 	void RenderMesh();
