@@ -10,6 +10,8 @@
 #include <functional>
 #include "../Core/Event/EventBase.h"
 #include "../Core/GameObject.h"
+#include "../Core/GameTimer.h"
+#include "windowsx.h";
 //using namespace std;
 
 class SystemClass
@@ -34,7 +36,22 @@ private:
 	//关闭窗口函数
 	void ShutdownWindow();
 
+	std::wstring mMainWndCaption;
+	GameTimer gameTimer;
+	void CalculateFrameStats();
+
+
+	float mTheta;
+	float mThetaY;
+	float mPhi;
+	float mRadius;
 public:
+	XMFLOAT3 mOriginPos;
+	POINT mDownMousePos;
+	POINT mLastMousePos;
+	void OnMouseDown(WPARAM btnState, int x, int y);
+	void OnMouseUp(WPARAM btnState, int x, int y);
+	void OnMouseMove(WPARAM btnState, int x, int y);
 	static shared_ptr<SystemClass> Get();
 	//using EventCallback = std::function<void(Event&)>;
 	//EventCallback eventCallback;

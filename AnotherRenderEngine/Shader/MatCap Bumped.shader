@@ -65,16 +65,21 @@ Shader "MatCap Bumped" {
 					    u_xlat0 = unity_ObjectToWorld[0] * in_POSITION0.xxxx + u_xlat0;
 					    u_xlat0 = unity_ObjectToWorld[2] * in_POSITION0.zzzz + u_xlat0;
 					    u_xlat0 = u_xlat0 + unity_ObjectToWorld[3];
+
 					    u_xlat1 = u_xlat0.yyyy * unity_MatrixVP[1];
 					    u_xlat1 = unity_MatrixVP[0] * u_xlat0.xxxx + u_xlat1;
 					    u_xlat1 = unity_MatrixVP[2] * u_xlat0.zzzz + u_xlat1;
 					    gl_Position = unity_MatrixVP[3] * u_xlat0.wwww + u_xlat1;
+					    //设uv(vs_ 是vs_out struct)
 					    vs_TEXCOORD0.xy = in_TEXCOORD0.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
+
 					    u_xlat0.x = dot(in_NORMAL0.xyz, in_NORMAL0.xyz);
 					    u_xlat0.x = inversesqrt(u_xlat0.x);
 					    u_xlat0.xyz = u_xlat0.xxx * in_NORMAL0.zxy;
+
 					    u_xlat9 = dot(in_TANGENT0.xyz, in_TANGENT0.xyz);
 					    u_xlat9 = inversesqrt(u_xlat9);
+
 					    u_xlat1.xyz = vec3(u_xlat9) * in_TANGENT0.yzx;
 					    u_xlat2.xyz = u_xlat0.xyz * u_xlat1.xyz;
 					    u_xlat0.xyz = u_xlat0.zxy * u_xlat1.yzx + (-u_xlat2.xyz);
@@ -134,13 +139,16 @@ Shader "MatCap Bumped" {
 					float u_xlat6;
 					void main()
 					{
+						//贴图
 					    u_xlat0 = texture(_BumpMap, vs_TEXCOORD0.xy);
 					    u_xlat0.x = u_xlat0.w * u_xlat0.x;
 					    u_xlat0.xy = u_xlat0.xy * vec2(2.0, 2.0) + vec2(-1.0, -1.0);
+
 					    u_xlat6 = dot(u_xlat0.xy, u_xlat0.xy);
 					    u_xlat6 = min(u_xlat6, 1.0);
 					    u_xlat6 = (-u_xlat6) + 1.0;
 					    u_xlat0.z = sqrt(u_xlat6);
+					    
 					    u_xlat1.x = dot(vs_TEXCOORD1.xyz, u_xlat0.xyz);
 					    u_xlat1.y = dot(vs_TEXCOORD2.xyz, u_xlat0.xyz);
 					    u_xlat0.xy = u_xlat1.xy * vec2(0.5, 0.5) + vec2(0.5, 0.5);

@@ -1,6 +1,6 @@
 #include "MeshComponent.h"
 #include "ImportFbx2.h"
-#include "../Render/D3DClass.h"
+//#include "../Render/D3DClass.h"
 #include "../Render/SystemClass.h"
 //#include "../Render/SystemClass.h"
 //#include "../Render/SystemClass.cpp"
@@ -145,6 +145,7 @@ a=b; //指针复制：此语句使a指向的地址与b指向的地址相同，它们都指向同一内存区域。
 	data.pSysMem = newPtr;
 	data.SysMemPitch = 0;
 	data.SysMemSlicePitch = 0;
+	//TODO:为啥不能用HR()
 	g_Device->CreateBuffer(&desc, &data, &mesh.mVertexBuffer); //这个是重复创建么？TODO:待确定有没清空原buffr
 }
 void MeshComponent::InitBuffer()
@@ -174,6 +175,8 @@ void MeshComponent::InitBuffer()
 			vertexData.pSysMem = &mMesh.mVertexData[0];//TODO:要重新构建一个指针（使用shader reflect)
 			vertexData.SysMemPitch = 0;
 			vertexData.SysMemSlicePitch = 0;
+			//todo:为啥不能用HR
+			//HR(g_Device->CreateBuffer(&vertexBufferDesc, &vertexData, &mMesh.mVertexBuffer));
 			g_Device->CreateBuffer(&vertexBufferDesc, &vertexData, &mMesh.mVertexBuffer);
 
 			D3D11_BUFFER_DESC  indexBufferDesc;

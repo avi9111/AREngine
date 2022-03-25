@@ -23,6 +23,7 @@ enum RenderMode
 
 class GameObject
 {
+
 public:
 	shared_ptr<Transform> m_pTransform;
 	shared_ptr<MeshComponent> m_pMesh;
@@ -43,7 +44,7 @@ public:
 	void RenderMesh();
 
 	void DrawMesh();
-
+	XMMATRIX GetInvenseTranspose(CXMMATRIX wm);
 	XMMATRIX GetWorldMatrix();
 
  	void SetMesh(shared_ptr<MeshComponent> pMesh);

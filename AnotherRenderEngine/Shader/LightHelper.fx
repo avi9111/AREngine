@@ -1,9 +1,8 @@
-﻿//***************************************************************************************
-// LightHelper.fx by Frank Luna (C) 2011 All Rights Reserved.
+//***************************************************************************************
+// LightHelper.fx by Sidney9111@gmail.com (C) 2022 All Rights Reserved.
 //
 // Structures and functions for lighting calculations.
 //***************************************************************************************
-
 struct DirectionalLight
 {
 	float4 Ambient;
@@ -11,6 +10,7 @@ struct DirectionalLight
 	float4 Specular;
 	float3 Direction;
 	float pad;
+
 };
 
 struct PointLight
@@ -50,7 +50,15 @@ struct Material
 	float4 Reflect;
 	float4 RimColor;
 };
-
+void ComputeLight(DirectionalLight L, float3 normal,out float4 diffuse)
+{
+	float3 lightVec = -L.Direction;
+	float diffuseFactor = (dot(lightVec, normal) + 1) / 2;
+	if (diffuseFactor > 0)
+	{
+		diffuse = diffuseFactor;
+	}
+}
 //---------------------------------------------------------------------------------------
 // Computes the ambient, diffuse, and specular terms in the lighting equation
 // from a directional light.  We need to output the terms separately because
@@ -91,7 +99,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 		spec = specFactor * mat.Specular * L.Specular;
 	}
 
-	//lim light ���
+	//lim light ???
 	[flatten]
 	if (useRimLight)
 	{
@@ -147,7 +155,7 @@ void ComputePointLight(Material mat, PointLight L, float3 pos, float3 normal, fl
 		spec = specFactor * mat.Specular * L.Specular;
 	}
 
-	//lim light ���
+	//lim light ???
 	[flatten]
 	if (useRimLight)
 	{
@@ -211,7 +219,7 @@ void ComputeSpotLight(Material mat, SpotLight L, float3 pos, float3 normal, floa
 		spec = specFactor * mat.Specular * L.Specular;
 	}
 
-	//lim light (flatten标签的作用是？？）
+	//lim light
 	[flatten]
 	if (useRimLight)
 	{

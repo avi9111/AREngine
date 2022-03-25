@@ -1,5 +1,3 @@
-﻿
-
 //VertexShader
 cbuffer CBMatrix:register(b0)
 {
@@ -16,7 +14,7 @@ struct VertexIn
 	float4 Pos:POSITION;
 	float2 TextureUV:TEXCOORD0;
 	float4 normal:TEXCOORD1;
-
+	float4 tagent : TANGENT;
 	//float4 color:COLOR;//加上之后，因为没解耦。。。。旧加载方法（会提示failed，并完全失败）
 };
 

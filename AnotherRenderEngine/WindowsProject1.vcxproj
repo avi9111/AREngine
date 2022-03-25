@@ -164,6 +164,8 @@
     <ClInclude Include="Core\Event\KeyCode.h" />
     <ClInclude Include="Core\Event\WindowEvent.h" />
     <ClInclude Include="Core\GameObject.h" />
+    <ClInclude Include="Core\GameTimer.h" />
+    <ClInclude Include="Core\Helper\MathHelper.h" />
     <ClInclude Include="Core\ImportFBX.h" />
     <ClInclude Include="Core\LayerManager.h" />
     <ClInclude Include="Core\MeshComponent.h" />
@@ -177,6 +179,7 @@
     <ClInclude Include="Include\log\output_stream.h" />
     <ClInclude Include="Include\output_stream.h" />
     <ClInclude Include="Include\system.h" />
+    <ClInclude Include="Core\Light.h" />
     <ClInclude Include="Maths\matrix.h" />
     <ClInclude Include="Render\CameraClass.h" />
     <ClInclude Include="Render\ColorShaderClass.h" />
@@ -196,12 +199,15 @@
     <ClCompile Include="Core\CommonFunction.cpp" />
     <ClCompile Include="Core\Component.cpp" />
     <ClCompile Include="Core\GameObject.cpp" />
+    <ClCompile Include="Core\GameTimer.cpp" />
+    <ClCompile Include="Core\Helper\MathHelper.cpp" />
     <ClCompile Include="Core\ImportFBX.cpp" />
     <ClCompile Include="Core\LayerManager.cpp" />
     <ClCompile Include="Core\ImportFbx2.cpp" />
     <ClCompile Include="Core\ImportBase.cpp" />
     <ClCompile Include="Core\MeshComponent.cpp" />
     <ClCompile Include="Core\ShaderLib\Shader.cpp" />
+    <ClCompile Include="Core\Light.cpp" />
     <ClCompile Include="Maths\Matrix.cpp" />
     <ClCompile Include="Render\ColorShaderClass.cpp" />
     <ClCompile Include="Render\D3DClass.cpp" />

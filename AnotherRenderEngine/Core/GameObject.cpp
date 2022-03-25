@@ -49,6 +49,8 @@ UINT GameObject::RenderTest(UINT stride) {
 		//设置拓扑方式
 		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+
+
 		//deviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		count = (UINT)mesh.mIndexData.size();
 	}
@@ -277,7 +279,16 @@ void GameObject::RenderMesh()
 		}
 	}
 }
+XMMATRIX GameObject::GetInvenseTranspose(CXMMATRIX ma)
+{
+	XMMATRIX A = ma;
 
+	A.r[3] = { 0.0f,0.0f,0.0f,1.0f };
+
+	XMVECTOR det = XMMatrixDeterminant(A);
+	XMMATRIX MaInvense = XMMatrixInverse(&det, A);
+	return XMMatrixTranspose(MaInvense);
+}
 XMMATRIX GameObject::GetWorldMatrix()
 {
 	const float GAME_ENGINE_UNIT_SCALE = 1.0f;

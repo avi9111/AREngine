@@ -15,12 +15,13 @@ cbuffer CBMatrix:register(b0)
 	matrix View;
 	matrix Proj;
 };
-
+//输入结构体必须对应C++ Struct（暂时)
 struct VertexIn
 {
 	float4 Pos:POSITION;
 	//float4 color:COLOR;//TODO:有color会导致uv采样的问题。。。。。。。。。。。
     float2 uv : TEXCOORD0;
+	float3 normal:NORMAL;//2022.3.25 c++传入Normal
 };
 
 

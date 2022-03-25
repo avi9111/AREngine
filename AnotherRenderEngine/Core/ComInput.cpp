@@ -169,6 +169,18 @@ void ComInput::OnImguiRender()
 			resetKeyboards();//因为是按下事件出错，可能弹出提示框，所以清空（保护）
 		}
 	}
+	else if (GDirectxCore->Input()->IsKeyDown(52))//num 4
+	{
+		try {
+			TesterEvent event;
+			event.key = 52;
+			eventCallback(event);
+		}
+		catch (exception ex)
+		{
+			resetKeyboards();//因为是按下事件出错，可能弹出提示框，所以清空（保护）
+		}
+	}
 	else if (input->IsKeyDown(116))//F5 ==116; F6 == 117, F7 == 118
 	{
 		//重启

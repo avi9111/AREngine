@@ -9,7 +9,11 @@
 #include<Windows.h>
 using namespace std;
 
-
+/// <summary>
+/// 不知道有什么卵用的方法，作用几乎==0
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
 wstring Str2Wstr(string);
 string Wstr2Str(wstring);
 

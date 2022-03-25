@@ -1,4 +1,6 @@
 # AREngine
+（测试分支 - 引入fbx Import,模型和法线贴图，需要fbx SDK支持，项目在这分支不能直接运行成功，之后再找fbx的简化方案）
+
 AREngine 将会是一个可以使用各种shader语言的渲染引擎
 
 AnotherRenderEngine(AREngine) is going to create to engin to render all kind of shader, hlsl or complied shader

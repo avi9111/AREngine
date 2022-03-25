@@ -18,18 +18,51 @@ ColorShaderClass* GraphicsClass::Shader()
 	return mColorShader;
 }
 
-GraphicsClass::GraphicsClass()
+GraphicsClass::GraphicsClass():mBoxCB(0),mFrameBoxCB(0)
 {
 	//初始化四个类的指针
 	mD3D = NULL;
 	mCamera = NULL;
 	mColorShader = NULL;
 	mModel = NULL;
+
+	// 直射光
+	mDirLight.Ambient = XMFLOAT4(1,0,0, 1.0f);
+	mDirLight.Diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	//mDirLight.Diffuse = XMFLOAT4(0.0f, 0, 0.9f, 1.0f);
+	mDirLight.Specular = XMFLOAT4(0, 1, 0, 1.0f);
+	//mDirLight.Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	mDirLight.Direction = XMFLOAT3(0.0f, 0.7f, 0.7f);
 }
 
 GraphicsClass::~GraphicsClass()
 {
+	ReleaseCOM(mBoxCB);
+	ReleaseCOM(mFrameBoxCB);
+}
 
+ID3D11ShaderResourceView* GraphicsClass::LoadTexture(const WCHAR* path)
+{
+	TexClass* tex = new TexClass();
+	//tex->Initilize(g_Device, L"TexturesAndMat/Gun_Texture.png");
+	tex->Initilize(g_Device, path);
+	ID3D11ShaderResourceView* texture = tex->GetTexture();
+
+	//mShader2->Apply();
+
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	ID3D11SamplerState* textureState;//暂时不知道有什么用
+	auto hr = g_Device->CreateSamplerState(&sampDesc, &textureState);
+	//return textureState;
+	return texture;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass&other)
@@ -64,8 +97,11 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 	//初始化相机的位置
 	mCamera->SetPostion(0.0f, 0.0f, -5.0f); 
 
+	//创建GameObject
 	shared_ptr<GameObject> go = shared_ptr<GameObject>(new GameObject());
-	shared_ptr<MeshComponent> mesh = shared_ptr<MeshComponent>(new MeshComponent("TObjects/zuoqi.FBX"));
+	//shared_ptr<MeshComponent> mesh = shared_ptr<MeshComponent>(new MeshComponent("TObjects/zuoqi.FBX"));
+	shared_ptr<MeshComponent> mesh = shared_ptr<MeshComponent>(new MeshComponent("TObjects/Tormentor.FBX"));
+	
 	//mesh->SetFirstMesh();//测试：：构建最基础的一个四边形 顶点 + index
 	mGameObject = go;
 	GDirectxCore->models.push_back(*go);
@@ -145,7 +181,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd)
 
 	//添加，使用纹理
 	TexClass* tex = new TexClass();
-	tex->Initilize(mD3D->GetDevice(), L"TexturesAndMat/Gun_Texture.png");
+	tex->Initilize(mD3D->GetDevice(), L"TexturesAndMat/Tormentor_Texturing.png");
 	ID3D11ShaderResourceView* texture = tex->GetTexture();
 	
 	auto d3dDeviceContext = mD3D->GetDeviceContext();
@@ -211,6 +247,7 @@ void GraphicsClass::Shutdown()
 
 bool GraphicsClass::Frame()
 {
+	//这段代码都写的挺烂的说。。。。。。
 	bool result;
 	result = Render();
 	if (!result)
@@ -219,6 +256,8 @@ bool GraphicsClass::Frame()
 }
 bool isLogIndex;
 bool isResetBufferByShader;
+bool isLogUseOldShader;
+bool isLogNewShader;
 bool GraphicsClass::Render()
 {
 	//三个变换矩阵
@@ -264,7 +303,18 @@ bool GraphicsClass::Render()
 	//	return false;
 	//}
 
+	if (mShader2->mRefInputLayout.size() == 0)//这里加个保护，否则后面会溢出，GPU溢出，整个win系统崩溃
+	{
+		if (isLogNewShader == false)
+		{
+			isLogNewShader = true;
+			printf("mShader2初始化有问题，inputLayout == 0 ，请检查\n");
+		}
+		return true;
+		//return false;//外面没有做保护，返回false会直接退出
+	}
 	auto worldMatrix = mGameObject->GetWorldMatrix();
+	auto worldInvMatrix = mGameObject->GetInvenseTranspose(worldMatrix);
 	auto inputLayoutLen = mShader2->mReflectLayoutSize;
 
 	//根据shader改变buffer..和顶点（剔除没用参数，或者补足）
@@ -278,21 +328,77 @@ bool GraphicsClass::Render()
 	//printf("len=%d\n", inputLayoutLen);
 	//printf("lenStride = %d \n", sizeof(VertexPCNTT));
 	UINT ic = mGameObject->RenderTest(inputLayoutLen);
+
+	//DX11 7.1
+// 设置常量缓存区
+	D3D11_BUFFER_DESC cbd;
+	ZeroMemory(&cbd, sizeof(cbd));
+	cbd.Usage = D3D11_USAGE_DEFAULT;
+	cbd.ByteWidth = sizeof(ConstantBuffer);
+	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbd.CPUAccessFlags = 0;
+	HR(g_Device->CreateBuffer(&cbd, nullptr, &mBoxCB));
+	g_DeviceContext->VSSetConstantBuffers(0, 1, &mBoxCB);	// VS常量缓冲区对应b0
+
+	D3D11_BUFFER_DESC cbdFrame;
+	ZeroMemory(&cbdFrame, sizeof(cbdFrame));
+	cbdFrame.Usage = D3D11_USAGE_DEFAULT;
+	cbdFrame.ByteWidth = sizeof(FrameConstantBuffer);
+	cbdFrame.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbdFrame.CPUAccessFlags = 0;
+	HR(g_Device->CreateBuffer(&cbdFrame, nullptr, &mFrameBoxCB));
+	g_DeviceContext->PSSetConstantBuffers(1, 1, &mFrameBoxCB);	// PS常量缓冲区对应b1
+
+
 	bool useOld = false;
 	if(useOld)
 	{ 
-		//旧的shader->render
-		result = mColorShader->Render(mD3D->GetDeviceContext(), ic, worldMatrix, ViewMatrix, ProjMatrix);
-		//(无用) mColorShader->SetShaderParameterOutside(mD3D->GetDeviceContext(), worldMatrix, ViewMatrix, ProjMatrix);
+		if (mColorShader)
+		{
+			//旧的shader->render
+			result = mColorShader->Render(mD3D->GetDeviceContext(), ic, worldMatrix, ViewMatrix, ProjMatrix);
+			//(无用) mColorShader->SetShaderParameterOutside(mD3D->GetDeviceContext(), worldMatrix, ViewMatrix, ProjMatrix);
+		}
+		else
+		{
+			if (isLogUseOldShader == false)
+			{
+				printf("用旧的Shader REnder有问题，没修复 \n");
+				isLogUseOldShader = true;
+			}
+		}
 	}
 	else
 	{
+		//world = DirectX::XMLoadFloat4x4(&mWavesWorld);	// Waves位置
+	//view = DirectX::XMLoadFloat4x4(&mView);
+	//proj = DirectX::XMLoadFloat4x4(&mProj);
+	//mCBuffer.gWorld = world;
+		//g_DeviceContext->UpdateSubresource(mBoxCB, 0, nullptr, &mCBuffer, 0, 0);
+
+		// 更新片元常量(新的shader无法用？？？）
+		//mFrameCBuffer.gMaterial = mHillsMat;	// 更新Hills的material
+		mFrameCBuffer.gDirLight = mDirLight;
+		g_DeviceContext->UpdateSubresource(mFrameBoxCB, 0, nullptr, &mFrameCBuffer, 0, 0);
+
 		//新的shader
 		//这个方法Apply()，缺少matrix,需要先调用？？？ :SetShaderParameterOutside()
 		mShader2->SetMatrix("World", worldMatrix);
 		mShader2->SetMatrix("View", ViewMatrix);
 		mShader2->SetMatrix("Proj", ProjMatrix);
+		mShader2->SetMatrix("WorldInvTranpose", worldInvMatrix);
+//		mShader2->SetRWStructBufferInData("gDirLight", &mDirLight,4);
+		XMFLOAT4 dir = XMFLOAT4();
+		dir.x = mDirLight.Direction.x;
+		dir.y = mDirLight.Direction.y;
+		dir.z = mDirLight.Direction.z;
+		dir.w = 0;
+		mShader2->SetFloat4("gLiteColor", dir);
 
+
+		XMMATRIX ss;
+		memcpy(&ss, &mDirLight, sizeof(XMMATRIX));
+		mShader2->SetMatrixArrayElement("gDirLight", ss, 0);
 		mShader2->Apply();//IASetInputLayout();->VSSetShader();->PSSetShader()
 
 		////一步步，释出不行原因（找到inputLayout的问题，并解决了还是不知道根本原因）
@@ -304,6 +410,10 @@ bool GraphicsClass::Render()
 		//mShader2->ApplyDirectXOnly(mColorShader->md3dVertexShader,
 		//	mColorShader->md3dPixelShader,
 		//	mColorShader->md3dInputLayout);
+		// 
+
+	
+
 		//渲染三角形（shader render必须）
 		g_DeviceContext->DrawIndexed(ic, 0, 0);
 	}

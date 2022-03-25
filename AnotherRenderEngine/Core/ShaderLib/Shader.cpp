@@ -24,7 +24,39 @@ Shader::~Shader()
 void Shader::ShutDown()
 {
 }
+void Shader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND, WCHAR*)
+{
+	char* error;
+	unsigned long bufferSize;
+	std::ofstream out;
 
+	error = static_cast<char*>(errorMessage->GetBufferPointer());
+	bufferSize = errorMessage->GetBufferSize();
+	out.open("log.txt");
+	for (auto i = 0; i < bufferSize; ++i) {
+		out << error[i];
+	}
+	out.close();
+	errorMessage->Release();
+	errorMessage = 0;
+	//delete error;
+}
+//void Shader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, PCHAR fileName) {
+//	char* error;
+//	unsigned long bufferSize;
+//	std::ofstream out;
+//
+//	error = static_cast<char*>(errorMessage->GetBufferPointer());
+//	bufferSize = errorMessage->GetBufferSize();
+//	out.open("log.txt");
+//	for (auto i = 0; i < bufferSize; ++i) {
+//		out << error[i];
+//	}
+//	out.close();
+//	errorMessage->Release();
+//	errorMessage = 0;
+//	delete error;
+//}
 bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 {
 	D3D11_SHADER_DESC shaderDesc;
@@ -325,8 +357,8 @@ bool Shader::SetMatrixArrayElement(const string& variableName, const CXMMATRIX& 
 		shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[variableName];
 		if (ShaderVariableType::SHADER_MATRIX == shaderVariable->variableType && 0 == shaderVariable->size % sizeof(CXMMATRIX))
 		{
-			XMMATRIX memMatrix = XMMatrixTranspose(matrix);
-
+			//XMMATRIX memMatrix = XMMatrixTranspose(matrix);
+			XMMATRIX memMatrix = matrix;//不采用转置就好了，不知道另外一个 set 方法为什么要转置
 			//暂时不支持记忆之前的值,等以后实现了3D数学库支持“==”在搞
 			memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(CXMMATRIX), (void*)&memMatrix, sizeof(CXMMATRIX));
 		}
@@ -420,12 +452,13 @@ VertexPixelShader::~VertexPixelShader()
 bool VertexPixelShader::Init(const string& shaderFile)
 {
 
-	bool result;
+	/*bool result;
 	result = InitShader(shaderFile);
 	if (!result)
 		return false;
 
-	return true;
+	return true;*/
+	return InitShader(shaderFile);
 }
 
 bool VertexPixelShader::InitShader(const string& shaderFile)
@@ -454,12 +487,13 @@ bool VertexPixelShader::InitShader(const string& shaderFile)
 		if (pErrorMessage)
 		{
 			//Log::LogShaderCompileInfo(pErrorMessage, shaderFile);
-			printf("Log::LogShaderCompileInfo(pErrorMessage, shaderFile)");
+			OutputShaderErrorMessage(pErrorMessage,nullptr,nullptr);
+			printf("Log::LogShaderCompileInfo(pErrorMessage, shaderFile) err=in log.txt \n");
 		}
 		else
 		{
 			//Log::Error("can not find VS file {0} ", shaderFile);
-			printf("can not find VS file {0} ", shaderFile);
+			printf("can not find VS file %s \n", wShaderFile.c_str());
 		}
 
 		return false;

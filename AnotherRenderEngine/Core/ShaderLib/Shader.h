@@ -101,7 +101,7 @@ protected:
 	};
 public:
 	vector<D3D11_INPUT_ELEMENT_DESC> mRefInputLayout;
-	UINT mReflectLayoutSize;
+	UINT mReflectLayoutSize;//TODO:容易溢出
 	virtual void Apply() = 0;
 	bool SetMatrixRaw(const string& variableName, const XMMATRIX& matrix);
 	bool SetMatrix(const string& variableName, const CXMMATRIX& matrix);
@@ -125,6 +125,7 @@ public:
 	ID3D11UnorderedAccessView* GetUav(const string& bufferName);
 
 protected:
+	void OutputShaderErrorMessage(ID3D10Blob* , HWND, WCHAR*);
 	bool ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection);
 	bool ReflectShaderTexture(ID3D11ShaderReflection* shaderReflection);
 	bool ReflectShaderSampler(ID3D11ShaderReflection* shaderReflection);

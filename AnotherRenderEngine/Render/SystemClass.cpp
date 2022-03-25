@@ -2,6 +2,7 @@
 #include "../Core/ComInput.h"//TODO:相对引用，要改
 #include "../Core/Event/TesterEvent.h"
 #include "TexClass.h"
+#include "../Core/Helper/MathHelper.h"
 //全局变量
 //static SystemClass* D3DAPP = NULL;
 // ？？放在头文件？
@@ -49,7 +50,9 @@ InputClass* SystemClass::Input(){return m_Input;}
 /// <returns></returns>
 ModelClass* SystemClass::Model(){return m_Graphics->Model();}
 GraphicsClass* SystemClass::Graphics() { return m_Graphics; }
-SystemClass::SystemClass()
+SystemClass::SystemClass():mMainWndCaption(L"AR Engine")	// L表明是Unicode 两个字节的字符
+//, mTheta(1.5f * MathHelper::Pi), mPhi(0.25f * MathHelper::Pi), mRadius(50.0f)
+,mTheta(0),mPhi(0),mRadius(50),mThetaY(0)
 {
 	m_Graphics = NULL;
 	m_Input = NULL;
@@ -90,6 +93,7 @@ bool SystemClass::OnChangeShader(Event& event)
 	switch (eve->key)
 	{
 	case 49://num 1
+	{
 		if (shader)
 		{
 			shader->ShaderIndex = 1;
@@ -98,47 +102,77 @@ bool SystemClass::OnChangeShader(Event& event)
 		m_Graphics->mShader2->Init("MyShader.fx");
 		m_Graphics->mShader2->Apply();
 		break;
+	}
 	case 51://num 3
+	{
 		m_Graphics->mShader2->Init("Shader/s3.fx");
 		m_Graphics->mShader2->Apply();
 		break;
+	}
+	case 52://num 4
+	{
+		m_Graphics->mShader2->Init("Shader/s4Bumped.fx");
+		m_Graphics->mShader2->Apply();
+		ID3D11ShaderResourceView* texBumped = m_Graphics->LoadTexture(L"TexturesAndMat/Tormentor_N.png");
+		m_Graphics->mShader2->SetTexture("_BumpMap", texBumped);
+		ID3D11ShaderResourceView* texColor = m_Graphics->LoadTexture(L"TexturesAndMat/Tormentor_Texturing.png");
+		g_Graphics->mShader2->SetTexture("ShaderTexture", texColor);
+		break;
+	}
 	case 50://num 2
+	{
+		//旧的Shader??
 		if (shader)
 		{
 			shader->ShaderIndex = 2;
 			initResult = shader->Initialize(m_Graphics->D3D()->GetDevice(), mHwnd);
 		}
-		m_Graphics->mShader2->Init("Shader/s2.fx");
-		TexClass* tex = new TexClass();
-		tex->Initilize(g_Device, L"TexturesAndMat/Gun_Texture.png");
-		ID3D11ShaderResourceView* texture = tex->GetTexture();
-	
-		m_Graphics->mShader2->Apply();
 
-		D3D11_SAMPLER_DESC sampDesc;
-		ZeroMemory(&sampDesc, sizeof(sampDesc));
-		sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-		sampDesc.MinLOD = 0;
-		sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		ID3D11SamplerState* textureState;
-		auto hr = g_Device->CreateSamplerState(&sampDesc, &textureState);
-		bool isset = m_Graphics->mShader2->SetTexture("ShaderTexture", texture);
-		printf("设置shader texture %d \n", isset);
+		//新的
+		m_Graphics->mShader2->Init("Shader/s6NormalMap.fx");
+		ID3D11ShaderResourceView* texBumped = m_Graphics->LoadTexture(L"TexturesAndMat/Tormentor_N.png");
+		m_Graphics->mShader2->SetTexture("_BumpMap", texBumped);
+		ID3D11ShaderResourceView* texColor = m_Graphics->LoadTexture(L"TexturesAndMat/Tormentor_Texturing.png");
+		g_Graphics->mShader2->SetTexture("ShaderTexture", texColor);
+
 		break;
-
-	//default:
-	//	break;
+	}
+	default:
+	{
+		break;
+	}
 	}
 	if (initResult == false) {
 		throw exception("shader compile error");
 	}
 	return true;
 }
+/// <summary>
+/// TODO:继承一个统一窗口，就可以在不同效果间切换了（虽然现在靠shader切换，键盘,1,2,3,4)
+/// </summary>
+void SystemClass::CalculateFrameStats()
+{
+	// 将fps信息显示到窗口bar上
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
 
+	frameCnt++;
+
+	if ((gameTimer.TotalTime() - timeElapsed) >= 1.0f)
+	{
+		float fps = (float)frameCnt;
+		float mspf = 1000.0f / fps;
+
+		std::wostringstream outs;
+		outs.precision(6);
+		outs << mMainWndCaption << L"   "
+			<< L"FPS:" << fps << L"   "
+			<< L"Frame Time:" << mspf << L"(ms)";
+		SetWindowText(mHwnd, outs.str().c_str());
+		frameCnt = 0;
+		timeElapsed += 1.0f;
+	}
+}
 /*系统类初始化函数*/
 bool SystemClass::Initialize()
 {
@@ -212,12 +246,12 @@ void SystemClass::Run()
 {
 	MSG msg = { 0 };
 	bool done, result;
-
+	gameTimer.Reset();	// 时间类重置
 	/*循环直到收到来自窗口的或者使用者的quit消息*/
 	done = false;
 	while (!done)
 	{
-		//操作窗口消息
+		//操作窗口消息,处理	
 		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
@@ -229,22 +263,55 @@ void SystemClass::Run()
 		}
 		else
 		{
+			// 否则运行游戏逻辑
+			gameTimer.Tick();
 			for (auto it = m_LayerManager->Begin(); it != m_LayerManager->End(); it++)
 			{
 				(*it)->OnImguiRender();
 			}
 			result = Frame();  //Frame运行的函数可能造成游戏退出
+			//////////////////////////////////////////////
+			//(写的相当烂，整个结构可以说没有结构，和DirectX官方例子完整性差太多）
+			//大神，刚毕业的时候写的吧
+			//一个明显不会c++，不会windows 应用的人写的。。。
+			//哎，不要在意这些细节，咱们继续肝引擎
+			/////////////////////////////////////////////
+			CalculateFrameStats();//统计fps
+
+			////鼠标控制镜头(探照灯？？）
+			//float x = mRadius * sinf(mPhi) * cosf(mTheta);
+			//float z = mRadius * sinf(mPhi) * sinf(mTheta);
+			//float y = mRadius * cosf(mPhi);
+			////m_Graphics->mCamera->SetRotation(x, y, z);
+			////mEyePosW = XMFLOAT4(x, y, z, 0.0f);
+
+			//旋转人
+			float x = 0;
+			float dy = mLastMousePos.x - mDownMousePos.x;
+			float z = 0;
+			//XMFLOAT3 pos = GDirectxCore->models[0].m_pTransform->localRotation;
+			//rot x;//上，下
+			//rot y;//左，右
+			XMFLOAT3 currPos =  XMFLOAT3(0,mOriginPos.y + dy,0);
+			//GDirectxCore->models[0].m_pTransform->localRotation = currPos;
+			models[0].m_pTransform->localRotation = XMFLOAT3(mThetaY*100, -mTheta*100, 0);
+
 			if (!result)
 			{
 				done = true;
 			}
+			
+			//TODO:// 暂停功能的实现
 		}
+
+
 
 	}
 }
 
 bool SystemClass::Frame()
 {
+	//还是很烂的代码（大牛也有新手的时候啊）
 	bool result;
 
 	
@@ -268,20 +335,35 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wPa
 {
 	switch (message)
 	{
+		// 处理鼠标事件
+		case WM_LBUTTONDOWN:
+		case WM_MBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+			OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			return 0;
+		case WM_LBUTTONUP:
+		case WM_MBUTTONUP:
+		case WM_RBUTTONUP:
+			OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			return 0;
+		case WM_MOUSEMOVE:
+			OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			return 0;
+
 		//消息处理可参考sdEngine最新
 		// GameWindow.cpp
 		//WM_CHAR 和 WM_keydown的问题观察
 		//https://bbs.csdn.net/topics/60387619
 	   //确认一个键已经在键盘上按下
-	   case WM_KEYDOWN:
-	  {
+		case WM_KEYDOWN:
+		{
 		   if (wParam == VK_ESCAPE)
 		   {
 		   }
 		  //如果一个键被按下,则将这个键的信息送到input object,为了可以记录这个状态
 		  m_Input->KeyDown((unsigned int)wParam);//所有字符都是 ，229,无解。。。。。。。。。。。
 		  return 0;
-	  }
+		}
 
 	   //确认一个键被释放
 	   case WM_KEYUP:
@@ -381,7 +463,8 @@ void SystemClass::InitializeWindow(int& ScrrenWidth, int &ScrrenHeight)
 	}
 
 	//创建窗口,并且获取窗口的句柄
-	mHwnd = CreateWindowEx(WS_EX_APPWINDOW, mApplicationName, mApplicationName,
+	//mHwnd = CreateWindowEx(WS_EX_APPWINDOW, mApplicationName, mApplicationName,
+	mHwnd = CreateWindowEx(WS_EX_APPWINDOW,mApplicationName, mMainWndCaption.c_str(),
 		WS_OVERLAPPEDWINDOW,
 		posX, posY, ScrrenWidth, ScrrenHeight, NULL, NULL, mHinstance, NULL);
 
@@ -416,6 +499,55 @@ void SystemClass::ShutdownWindow()
 	//置空应用类对象
 	//D3DAPP = NULL;
 
+}
+
+void SystemClass::OnMouseDown(WPARAM btnState, int x, int y)
+{
+	mOriginPos = models[0].m_pTransform->localPosition;
+	//mDownMousePos.x = x;
+	//mDownMousePos.y = y;
+	mLastMousePos.x = x;
+	mLastMousePos.y = y;
+	SetCapture(mHwnd);	// 捕获鼠标
+}
+
+void SystemClass::OnMouseUp(WPARAM btnState, int x, int y)
+{
+	ReleaseCapture();
+}
+
+void SystemClass::OnMouseMove(WPARAM btnState, int x, int y)
+{
+	if ((btnState & MK_LBUTTON) != 0)
+	{
+		// 计算鼠标移动的距离
+		float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
+		float dy = XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
+		
+
+		// 更新视角信息
+		mTheta += dx;
+		mThetaY += dy;
+		mPhi += dy;
+
+		// 裁剪mPhi角度
+		mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi - 0.1f);
+	}
+	else if ((btnState & MK_RBUTTON) != 0)
+	{
+		// 设定每个像素点为0.005的距离
+		float dx = 0.005f * static_cast<float>(x - mLastMousePos.x);
+		float dy = 0.005f * static_cast<float>(y - mLastMousePos.y);
+
+		// 更新相机与物体的距离
+		mRadius += dx - dy;
+
+		// 裁剪距离
+		mRadius = MathHelper::Clamp(mRadius, 3.0f, 50.0f);
+	}
+
+	mLastMousePos.x = x;
+	mLastMousePos.y = y;
 }
 
 shared_ptr<SystemClass> SystemClass::Get()

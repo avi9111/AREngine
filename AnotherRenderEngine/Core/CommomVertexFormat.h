@@ -20,7 +20,7 @@ struct VertexPCNTT
 	XMFLOAT3 pos;
 	XMFLOAT2 uv;
 	XMFLOAT3 normal;
-	//XMFLOAT3 tangent;
+	XMFLOAT3 tangent;
 	//XMFLOAT3 color;
 };
 
